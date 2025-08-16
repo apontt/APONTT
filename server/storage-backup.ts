@@ -1,0 +1,1 @@
+// Backup do arquivo storage.ts original para referência

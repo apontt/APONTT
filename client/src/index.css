@@ -1,0 +1,2139 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.font-dancing {
+  font-family: 'Dancing Script', cursive;
+}
+
+/* Theme colors */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 217.2 91.2% 59.8%;
+  --chart-1: 12 76% 61%;
+  --chart-2: 173 58% 39%;
+  --chart-3: 197 37% 24%;
+  --chart-4: 43 74% 66%;
+  --chart-5: 27 87% 67%;
+  --radius: 0.5rem;
+}
+
+/* Apply theme */
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+}
+
+/* Partner Dashboard - Layout Original */
+.partner-dashboard {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .partner-dashboard {
+    padding: 2rem;
+  }
+}
+
+.partner-header {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Partner Metrics - Layout Original */
+.partner-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Mobile responsiveness for contracts page */
+@media (max-width: 767px) {
+  .desktop-table {
+    display: none !important;
+  }
+  
+  .mobile-layout {
+    display: block !important;
+  }
+  
+  /* Força responsividade na página de contratos */
+  .mobile-contracts-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+  
+  /* Garante que as tabs sejam responsivas */
+  .mobile-tabs {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  /* Força exibição dos cards mobile */
+  .mobile-contract-card {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .partner-metrics {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+.partner-metric-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.partner-metric-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.partner-metric-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e40af;
+  margin: 0.5rem 0;
+}
+
+.partner-metric-label {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.partner-content-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f5f9;
+  overflow: hidden;
+}
+
+/* Responsive Table Improvements */
+@media (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .table-responsive table {
+    min-width: 100%;
+    font-size: 0.875rem;
+  }
+  
+  .table-responsive th,
+  .table-responsive td {
+    padding: 0.5rem;
+    white-space: nowrap;
+  }
+}
+
+/* Mobile Button Improvements - Layout consistente */
+@media (max-width: 640px) {
+  .mobile-btn-stack {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.5rem;
+    width: 100%;
+  }
+  
+  .mobile-btn-stack button {
+    justify-content: center;
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* Tabs mobile - manter proporções desktop */
+@media (max-width: 640px) {
+  .partner-content-card {
+    margin: 0.5rem;
+    border-radius: 12px;
+  }
+  
+  .partner-metrics {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Card Grid Responsive */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+/* Modal Improvements for Mobile */
+@media (max-width: 640px) {
+  .dialog-content-mobile {
+    width: 95vw;
+    max-width: 95vw;
+    margin: 0.5rem;
+  }
+}
+
+/* Banking Style Navigation - Layout Original Mobile */
+.partner-tabs .tabs-list {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.25rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.25rem;
+  overflow: visible;
+}
+
+/* Mobile layout igual desktop - sem setas */
+@media (max-width: 768px) {
+  .partner-tabs .tabs-list {
+    grid-template-columns: repeat(5, 1fr);
+    min-height: auto;
+    overflow: visible;
+    white-space: nowrap;
+    padding: 0.25rem;
+  }
+}
+
+.partner-tabs .tabs-trigger {
+  border-radius: 8px;
+  padding: 0.75rem 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-align: center;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mobile: manter mesmo tamanho e estilo sem setas */
+@media (max-width: 768px) {
+  .partner-tabs .tabs-trigger {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+    min-width: auto;
+    flex-shrink: 0;
+  }
+}
+
+/* Garantir que não apareçam botões de navegação */
+@media (max-width: 768px) {
+  .partner-tabs [role="tablist"] + button,
+  .partner-tabs button + [role="tablist"] + button {
+    display: none !important;
+  }
+  
+  /* Remover qualquer scroll ou navegação lateral */
+  .partner-tabs {
+    overflow: visible !important;
+  }
+  
+  /* Esconder elementos de navegação do shadcn/ui */
+  .partner-tabs [data-radix-collection-item]:first-child,
+  .partner-tabs [data-radix-collection-item]:last-child {
+    display: none !important;
+  }
+  
+  /* Forçar que apenas as 5 abas sejam visíveis */
+  .partner-tabs [role="tablist"] > *:not([role="tab"]) {
+    display: none !important;
+  }
+}
+
+.partner-tabs .tabs-trigger[data-state="active"] {
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+/* Remover setas de navegação completamente */
+.partner-tabs button:not([role="tab"]) {
+  display: none !important;
+}
+
+/* Layout grid fixo sem navegação */
+@media (max-width: 768px) {
+  .partner-tabs {
+    overflow: visible !important;
+  }
+  
+  .partner-tabs [role="tablist"] {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 0.25rem !important;
+    overflow: visible !important;
+  }
+  
+  /* Remover botões de navegação */
+  .partner-tabs > div > button:not([role="tab"]) {
+    display: none !important;
+  }
+}
+
+/* Wallet Style Buttons - Como na imagem */
+.btn-banking {
+  border-radius: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  padding: 0.875rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: none;
+}
+
+@media (max-width: 768px) {
+  .btn-banking {
+    border-radius: 18px;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.btn-banking:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Wallet Style Inputs */
+.input-banking {
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 0.875rem 1rem;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+}
+
+@media (max-width: 768px) {
+  .input-banking {
+    border-radius: 18px;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+.input-banking:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  background: white;
+}
+
+/* Forçar layout consistente das abas sem setas */
+.partner-tabs [role="tablist"] {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  width: 100% !important;
+  gap: 0.25rem !important;
+  overflow: visible !important;
+  position: relative !important;
+}
+
+/* Remover todas as setas e botões de navegação */
+.partner-tabs [role="tablist"]::before,
+.partner-tabs [role="tablist"]::after {
+  display: none !important;
+}
+
+.partner-tabs .scrollbar-hide {
+  display: none !important;
+}
+
+/* Mobile: manter grid sem scroll ou setas */
+@media (max-width: 768px) {
+  .partner-tabs [role="tablist"] {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    overflow: visible !important;
+    scrollbar-width: none !important;
+    position: static !important;
+  }
+  
+  .partner-tabs [role="tablist"]::-webkit-scrollbar {
+    display: none !important;
+  }
+  
+  /* Esconder qualquer botão ou seta de navegação */
+  .partner-tabs button[aria-label*="scroll"],
+  .partner-tabs button[aria-label*="Previous"],
+  .partner-tabs button[aria-label*="Next"],
+  .partner-tabs [data-orientation="horizontal"] > button:first-child,
+  .partner-tabs [data-orientation="horizontal"] > button:last-child {
+    display: none !important;
+  }
+}
+
+/* Layout responsivo para mobile */
+@media (max-width: 768px) {
+  .card-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  /* Tabelas responsivas no mobile */
+  .partner-content-card table {
+    width: 100% !important;
+    display: table !important;
+    table-layout: fixed !important;
+  }
+  
+  .partner-content-card th,
+  .partner-content-card td {
+    display: table-cell !important;
+    padding: 0.5rem !important;
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
+  /* Headers de tabela visíveis */
+  .partner-content-card thead {
+    display: table-header-group !important;
+  }
+  
+  .partner-content-card tbody {
+    display: table-row-group !important;
+  }
+  
+  .partner-content-card tr {
+    display: table-row !important;
+  }
+  
+  /* Scroll horizontal para tabelas grandes */
+  .partner-content-card .table-container {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100vw !important;
+  }
+  
+  /* Forçar visibilidade das colunas */
+  .partner-content-card .table-container table {
+    min-width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
+  
+  /* Colunas com larguras mínimas */
+  .partner-content-card th:nth-child(1),
+  .partner-content-card td:nth-child(1) {
+    min-width: 40px !important; /* Checkbox */
+    width: 40px !important;
+  }
+  
+  .partner-content-card th:nth-child(2),
+  .partner-content-card td:nth-child(2) {
+    min-width: 120px !important; /* Nome */
+  }
+  
+  .partner-content-card th:nth-child(3),
+  .partner-content-card td:nth-child(3) {
+    min-width: 100px !important; /* Contato/Valor */
+  }
+  
+  .partner-content-card th:nth-child(4),
+  .partner-content-card td:nth-child(4) {
+    min-width: 80px !important; /* Status */
+  }
+  
+  .partner-content-card th:nth-child(5),
+  .partner-content-card td:nth-child(5) {
+    min-width: 80px !important; /* Ações */
+  }
+  
+  /* Melhorar legibilidade no mobile */
+  .partner-content-card td {
+    border-bottom: 1px solid #f1f5f9 !important;
+    vertical-align: middle !important;
+  }
+  
+  .partner-content-card th {
+    background-color: #f8fafc !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+  }
+}
+
+/* Travel App Styles - Responsivo */
+.travel-bg {
+  background: #2563EB;
+  min-height: 100vh;
+  padding: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .travel-bg {
+    padding: 1rem;
+  }
+}
+
+.travel-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .travel-container {
+    padding: 1rem;
+  }
+}
+
+.travel-header {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .travel-header {
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.travel-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .travel-title {
+    font-size: 1.875rem;
+  }
+}
+
+.travel-subtitle {
+  color: #6b7280;
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  .travel-subtitle {
+    font-size: 1rem;
+  }
+}
+
+.travel-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .travel-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+}
+
+.travel-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+@media (min-width: 768px) {
+  .travel-card {
+    border-radius: 12px;
+  }
+}
+
+.travel-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .travel-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .travel-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+.travel-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.travel-input {
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.75rem;
+  background: white;
+  color: #1f2937;
+}
+
+.travel-input:focus {
+  border-color: #2563EB;
+  outline: none;
+}
+
+.travel-label {
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.travel-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.travel-table {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Force white backgrounds e molduras para modais e componentes flutuantes */
+[data-radix-dialog-content],
+[data-radix-dropdown-menu-content],
+[data-radix-popover-content],
+[data-radix-select-content],
+[data-radix-toast],
+.dialog-content,
+.dropdown-menu-content,
+.popover-content,
+.select-content,
+.sheet-content,
+.toast {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: #000000 !important;
+  border: 3px solid #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Force all dialog and modal text to be black with proper contrast */
+[data-radix-dialog-content] *,
+[data-radix-dialog-content] h1,
+[data-radix-dialog-content] h2, 
+[data-radix-dialog-content] h3,
+[data-radix-dialog-content] h4,
+[data-radix-dialog-content] h5,
+[data-radix-dialog-content] h6,
+[data-radix-dialog-content] p,
+[data-radix-dialog-content] span,
+[data-radix-dialog-content] div,
+[data-radix-dialog-content] label,
+[data-radix-dialog-content] input,
+[data-radix-dialog-content] button,
+.dialog-content *,
+.card *,
+h1, h2, h3, h4, h5, h6, p, span, div, label,
+.text-gray-600,
+.text-gray-500,
+.text-muted-foreground {
+  color: #000000 !important;
+  text-shadow: none !important;
+}
+
+/* Ensure form inputs are visible */
+[data-radix-dialog-content] input,
+[data-radix-dialog-content] textarea,
+[data-radix-dialog-content] select {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 6px !important;
+}
+
+/* Dialog titles and headers */
+[data-radix-dialog-title],
+.dialog-title {
+  color: #000000 !important;
+  font-weight: 600 !important;
+  font-size: 1.25rem !important;
+}
+
+/* Remove todos os efeitos de vidro/glass do sistema */
+.backdrop-blur,
+.backdrop-blur-sm,
+.backdrop-blur-md,
+.backdrop-blur-lg,
+.backdrop-blur-xl,
+.backdrop-blur-2xl,
+.backdrop-blur-3xl,
+*[class*="backdrop-blur"],
+*[style*="backdrop-filter"],
+*[style*="-webkit-backdrop-filter"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
+/* Remove efeitos glass de componentes Radix */
+[data-radix-dialog-content],
+[data-radix-dropdown-menu-content],
+[data-radix-popover-content],
+[data-radix-select-content],
+[data-radix-toast] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Overlay sólido para modais - sem efeitos de vidro */
+[data-radix-dialog-overlay],
+[data-radix-sheet-overlay] {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Garante máxima visibilidade dos modais */
+[data-radix-dialog-content] {
+  background: #ffffff !important;
+  border: 4px solid #ffffff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4) !important;
+  padding: 2rem !important;
+  z-index: 1000 !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+}
+
+/* Garantir que formulários longos sejam scrolláveis */
+[data-radix-dialog-content] form {
+  max-height: 70vh !important;
+  overflow-y: auto !important;
+  padding-right: 8px !important;
+}
+
+/* Botões dos formulários sempre visíveis */
+[data-radix-dialog-content] .sticky {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 10 !important;
+  background: white !important;
+  margin-top: 1rem !important;
+  padding-top: 1rem !important;
+}
+
+/* Força cor preta em todos os elementos do modal */
+[data-radix-dialog-content] *,
+[data-radix-dialog-content] h1,
+[data-radix-dialog-content] h2,
+[data-radix-dialog-content] h3,
+[data-radix-dialog-content] p,
+[data-radix-dialog-content] label,
+[data-radix-dialog-content] span,
+[data-radix-dialog-content] button,
+[data-radix-dialog-content] div {
+  color: #000000 !important;
+  background: transparent !important;
+}
+
+/* Campos de formulário com fundo branco e texto preto */
+[data-radix-dialog-content] input[type="text"],
+[data-radix-dialog-content] input[type="email"],
+[data-radix-dialog-content] input[type="tel"],
+[data-radix-dialog-content] textarea,
+[data-radix-dialog-content] select {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #d1d5db !important;
+  border-radius: 8px !important;
+  padding: 0.5rem !important;
+}
+
+/* Botões com contraste adequado */
+[data-radix-dialog-content] button {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 500 !important;
+}
+
+[data-radix-dialog-content] button[type="button"] {
+  background-color: #6b7280 !important;
+  color: #ffffff !important;
+}
+
+/* FORÇA VISIBILIDADE EM TODOS OS MODAIS E FORMULÁRIOS */
+/* Aplica a todos os componentes Dialog, Sheet, Popover, Select, Command */
+[data-radix-dialog-content],
+[data-radix-sheet-content],
+[data-radix-popover-content],
+[data-radix-select-content],
+[data-radix-command-dialog],
+[data-radix-dropdown-menu-content],
+.dialog-content,
+.sheet-content,
+.popover-content,
+.select-content,
+.command-dialog,
+.dropdown-menu-content {
+  background: #ffffff !important;
+  border: 4px solid #ffffff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+  padding: 1.5rem !important;
+  z-index: 2000 !important;
+  color: #000000 !important;
+}
+
+/* FORÇA COR PRETA EM TODOS OS ELEMENTOS DE TEXTO */
+[data-radix-dialog-content] *,
+[data-radix-sheet-content] *,
+[data-radix-popover-content] *,
+[data-radix-select-content] *,
+[data-radix-command-dialog] *,
+[data-radix-dropdown-menu-content] *,
+.dialog-content *,
+.sheet-content *,
+.popover-content *,
+.select-content *,
+.command-dialog *,
+.dropdown-menu-content * {
+  color: #000000 !important;
+  text-shadow: none !important;
+}
+
+/* CAMPOS DE FORMULÁRIO VISÍVEIS EM TODOS OS MODAIS */
+[data-radix-dialog-content] input,
+[data-radix-dialog-content] textarea,
+[data-radix-dialog-content] select,
+[data-radix-sheet-content] input,
+[data-radix-sheet-content] textarea,
+[data-radix-sheet-content] select,
+[data-radix-popover-content] input,
+[data-radix-popover-content] textarea,
+[data-radix-popover-content] select {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #d1d5db !important;
+  border-radius: 8px !important;
+  padding: 0.75rem !important;
+  font-size: 1rem !important;
+}
+
+/* BOTÕES VISÍVEIS EM TODOS OS MODAIS */
+[data-radix-dialog-content] button,
+[data-radix-sheet-content] button,
+[data-radix-popover-content] button {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  border: 2px solid #2563eb !important;
+  border-radius: 8px !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+}
+
+/* BOTÕES SECUNDÁRIOS */
+[data-radix-dialog-content] button[variant="outline"],
+[data-radix-dialog-content] button[data-variant="outline"],
+[data-radix-dialog-content] .btn-secondary {
+  background-color: #ffffff !important;
+  color: #374151 !important;
+  border: 2px solid #d1d5db !important;
+}
+
+/* ALERTAS E CONFIRMAÇÕES VISÍVEIS */
+[data-radix-alert-dialog-content] {
+  background: #ffffff !important; 
+  border: 4px solid #ffffff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
+  color: #000000 !important;
+}
+
+[data-radix-alert-dialog-content] * {
+  color: #000000 !important;
+  text-shadow: none !important;
+}
+
+/* COMANDOS E DROPDOWNS VISÍVEIS */
+[data-radix-command-dialog-content],
+[data-command-dialog-content] {
+  background: #ffffff !important;
+  border: 3px solid #e5e7eb !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* SELECTS E POPOVERS VISÍVEIS */
+[data-radix-select-content],
+[data-radix-popover-content] {
+  background: #ffffff !important;
+  border: 2px solid #e5e7eb !important;
+}
+
+/* RESPONSIVIDADE PARA SISTEMA DE PARCEIROS */
+/* Mobile First - Partner Dashboard */
+.partner-dashboard {
+  padding: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .partner-dashboard {
+    padding: 1rem;
+  }
+}
+
+/* Mobile tabs responsive */
+.partner-tabs {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.partner-tabs [role="tablist"] {
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: max-content;
+  gap: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .partner-tabs [role="tablist"] {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+}
+
+.partner-tabs [role="tab"] {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .partner-tabs [role="tab"] {
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Partner cards responsive */
+.partner-card {
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .partner-card {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Partner actions mobile */
+.partner-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .partner-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+@media (min-width: 768px) {
+  .partner-actions {
+    gap: 1rem;
+  }
+}
+
+.partner-action-btn {
+  width: 100%;
+  font-size: 0.875rem;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .partner-action-btn {
+    width: auto;
+    min-width: 120px;
+  }
+}
+
+@media (min-width: 768px) {
+  .partner-action-btn {
+    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
+  }
+}
+
+/* Partner tables mobile */
+.partner-table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.partner-table {
+  min-width: 600px;
+}
+
+@media (min-width: 768px) {
+  .partner-table {
+    min-width: 100%;
+  }
+}
+
+/* Partner forms mobile */
+.partner-form {
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .partner-form {
+    padding: 1.5rem;
+  }
+}
+
+.partner-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .partner-form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .partner-form-grid {
+    gap: 1.5rem;
+  }
+}
+
+/* ESTILO MINIMALISTA BANCÁRIO - MOBILE FIRST */
+.partner-login-container {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 123, 255, 0.15);
+}
+
+@media (min-width: 768px) {
+  .partner-login-container {
+    max-width: 420px;
+    padding: 2rem;
+  }
+}
+
+/* Dashboard principal - estilo clean */
+.partner-dashboard {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  min-height: calc(100vh - 80px);
+}
+
+@media (min-width: 768px) {
+  .partner-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+}
+
+/* Cards de métricas - estilo bancário minimalista */
+.partner-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .partner-metrics {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.partner-metric-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: none;
+  border-radius: 20px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 123, 255, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.partner-metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  border-radius: 20px 20px 0 0;
+}
+
+.partner-metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+}
+
+.partner-metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0.5rem 0 0.25rem 0;
+  letter-spacing: -0.025em;
+}
+
+@media (min-width: 768px) {
+  .partner-metric-value {
+    font-size: 1.75rem;
+  }
+}
+
+.partner-metric-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@media (min-width: 768px) {
+  .partner-metric-label {
+    font-size: 0.8rem;
+  }
+}
+
+/* Botões de ação - estilo minimalista */
+.partner-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .partner-actions {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+}
+
+.partner-btn {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 123, 255, 0.2);
+  transition: all 0.3s ease;
+  text-transform: none;
+  letter-spacing: 0.025em;
+}
+
+@media (min-width: 768px) {
+  .partner-btn {
+    width: auto;
+    min-width: 140px;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+.partner-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+/* Header do dashboard - minimalista */
+.partner-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 123, 255, 0.1);
+  margin-bottom: 1.5rem;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 4px 20px rgba(0, 123, 255, 0.05);
+}
+
+/* Tabs minimalistas */
+.partner-tabs {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 123, 255, 0.08);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+/* Cards de conteúdo limpos */
+.partner-content-card {
+  background: white;
+  border-radius: 20px;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 123, 255, 0.08);
+  margin-bottom: 1rem;
+  padding: 1.5rem;
+}
+
+/* Inputs mais clean */
+.partner-input {
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.partner-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  background: white;
+}
+
+/* Tables responsivas com estilo bancário */
+.partner-table {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 123, 255, 0.08);
+}
+
+/* Mobile cards para clientes e contratos */
+@media (max-width: 768px) {
+  .partner-mobile-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 12px rgba(0, 123, 255, 0.08);
+    border-left: 4px solid #007bff;
+  }
+}
+
+/* FORÇA VISIBILIDADE EM PÁGINAS ESPECÍFICAS */
+/* Wallet, Partner Dashboard, Reports, Profile */
+.travel-card * {
+  color: #333333 !important;
+}
+
+/* SCROLL SUAVE PARA TODAS AS ABAS */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Espaçamento para scroll das abas */
+.scroll-mt-20 {
+  scroll-margin-top: 5rem;
+}
+
+/* Melhor posicionamento do scroll em dispositivos móveis */
+@media (max-width: 768px) {
+  .scroll-mt-20 {
+    scroll-margin-top: 3rem;
+  }
+}
+
+/* Melhoria na navegação das abas */
+[role="tablist"] {
+  position: sticky;
+  top: 80px;
+  background: white;
+  z-index: 10;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+/* Scroll suave para conteúdo das abas */
+[data-radix-tabs-content] {
+  scroll-margin-top: 150px;
+}
+
+/* SCROLL OTIMIZADO PARA FORMULÁRIOS E PÁGINAS LONGAS */
+.travel-container {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+/* Esconder layout mobile no desktop */
+.mobile-layout {
+  display: none;
+}
+
+/* Mobile Layout - Financial App Style */
+@media (max-width: 768px) {
+  /* Container principal mobile */
+  .travel-container {
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  /* ESCONDER APENAS ELEMENTOS DESKTOP ESPECÍFICOS */
+  .desktop-table .space-y-6,
+  .desktop-table .border.rounded-lg,
+  .desktop-table .flex.flex-col.lg\\:flex-row {
+    display: none !important;
+  }
+
+  /* FORÇA MOSTRAR MOBILE LAYOUT */
+  .mobile-contracts-layout {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Header mobile - manter fundo azul sólido padrão */
+  .travel-header {
+    background: #2563EB !important;
+    padding: 1.5rem 1rem 2rem 1rem !important;
+    margin: 0 !important;
+    border-radius: 0 0 2rem 2rem !important;
+    color: white !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .travel-header .flex {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1rem !important;
+  }
+
+  /* Logo mobile */
+  .travel-header img {
+    max-width: 120px !important;
+    height: auto !important;
+  }
+
+  /* Títulos mobile */
+  .travel-title {
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    margin: 0 !important;
+    color: white !important;
+  }
+
+  .travel-subtitle {
+    font-size: 0.95rem !important;
+    text-align: center !important;
+    opacity: 0.9 !important;
+    color: white !important;
+  }
+
+  /* Cards mobile com estilo financeiro */
+  .mobile-card {
+    background: white;
+    border-radius: 1.5rem;
+    margin: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: none;
+  }
+
+  /* Métricas mobile - estilo dashboard financeiro */
+  .mobile-metrics {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem;
+    padding: 0 1rem;
+  }
+
+  .mobile-metric-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: none;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .mobile-metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+  }
+
+  .mobile-metric-label {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  /* Botões mobile - estilo app */
+  .mobile-action-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem;
+    padding: 0 1rem;
+  }
+
+  .mobile-action-btn {
+    background: white;
+    border: none;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .mobile-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .mobile-action-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .mobile-action-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e293b;
+    text-align: left;
+    flex: 1;
+  }
+
+  /* Lista de transações mobile */
+  .mobile-transaction-list {
+    margin: 1rem;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mobile-transaction-header {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  .mobile-transaction-item {
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .mobile-transaction-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  .mobile-transaction-content {
+    flex: 1;
+  }
+
+  .mobile-transaction-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+  }
+
+  .mobile-transaction-subtitle {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+
+  .mobile-transaction-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #059669;
+  }
+
+  /* Ajustes gerais para mobile */
+  .travel-btn {
+    border-radius: 1rem !important;
+    padding: 0.875rem 1.5rem !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Tabelas mobile - converter em cards */
+  table {
+    display: none;
+  }
+
+  .mobile-table-card {
+    background: white;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .mobile-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .mobile-table-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  .mobile-table-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .mobile-table-content {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .mobile-table-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+
+  .mobile-table-label {
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  .mobile-table-value {
+    color: #1e293b;
+    font-weight: 600;
+  }
+
+  /* Formulários mobile */
+  .mobile-form {
+    background: white;
+    border-radius: 1.5rem 1.5rem 0 0;
+    margin-top: 1rem;
+    padding: 1.5rem;
+    min-height: 60vh;
+  }
+
+  .travel-input {
+    border-radius: 1rem !important;
+    padding: 0.875rem 1rem !important;
+    border: 1px solid #e2e8f0 !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Esconder elementos desnecessários no mobile */
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Mostrar apenas layout mobile */
+  .mobile-layout {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .desktop-content {
+    display: none !important;
+  }
+
+  /* Remove qualquer scroll horizontal */
+  * {
+    overflow-x: hidden !important;
+  }
+
+  html, body {
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Contratos agora usam as mesmas classes do dashboard mobile */
+
+  /* ESCONDER DESKTOP TABLE NO MOBILE */
+  .desktop-table {
+    display: none !important;
+  }
+
+  /* MOSTRAR LAYOUT MOBILE */
+  .mobile-contracts-layout {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* Background mobile - manter azul padrão do sistema */
+  .travel-bg {
+    background: #2563EB !important;
+    min-height: 100vh !important;
+    padding-bottom: 5rem !important; /* Espaço para navegação inferior */
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+
+  /* Força layout em coluna sem scroll horizontal */
+  .mobile-layout * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Botões mobile */
+  .btn-mobile {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 48px !important;
+    font-size: 0.95rem !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .btn-mobile:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  /* Botões de ação mobile organizados */
+  .action-buttons {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    padding: 1rem !important;
+    background: white !important;
+    border-radius: 1rem !important;
+    margin: 0 1rem !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+/* Desktop - Mostrar tabela, esconder mobile */
+@media (min-width: 769px) {
+  .desktop-table {
+    display: block !important;
+  }
+
+  .mobile-contracts-layout {
+    display: none !important;
+  }
+}
+
+/* Formulários longos com scroll responsivo */
+.travel-form {
+  scroll-behavior: smooth;
+  scroll-margin-top: 80px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Scroll para modais em dispositivos móveis */
+@media (max-width: 768px) {
+  .travel-form {
+    max-height: 90vh;
+    scroll-margin-top: 60px;
+  }
+
+  [role="tablist"] {
+    top: 60px;
+  }
+
+.travel-container {
+    scroll-padding-top: 80px;
+  }
+}
+
+/* Scroll suave para cards e listas */
+.travel-grid {
+  scroll-behavior: smooth;
+}
+
+.travel-card:target {
+  scroll-margin-top: 100px;
+  animation: highlight 1s ease-out;
+}
+
+@keyframes highlight {
+  0% { 
+    background-color: rgba(37, 99, 235, 0.1);
+    transform: scale(1.02);
+  }
+  100% { 
+    background-color: transparent;
+    transform: scale(1);
+  }
+}
+
+/* Tabs e abas com visibilidade total */
+[data-radix-tabs-content] {
+  color: #000000 !important;
+}
+
+[data-radix-tabs-trigger] {
+  color: #374151 !important;
+  background: transparent !important;
+}
+
+[data-radix-tabs-trigger][data-state="active"] {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* Forçar remoção de qualquer transparência/vidro em elementos flutuantes */
+.fixed,
+.absolute,
+.relative {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Cards e containers com bordas sólidas - sem efeitos glass */
+.travel-card,
+.card,
+.shadow-2xl,
+.shadow-xl {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Remove qualquer opacidade/transparência desnecessária */
+.bg-opacity-90,
+.bg-opacity-95,
+.opacity-90,
+.opacity-95 {
+  opacity: 1 !important;
+  background-opacity: 1 !important;
+}
+
+/* Ensure all text is readable */
+.card *,
+.dialog-content *,
+.dropdown-menu-content *,
+.popover-content * {
+  color: #000000 !important;
+}
+
+/* Override any bg-white with opacity */
+.bg-white\/95,
+.bg-white\/90,
+.bg-white\/80,
+.bg-white\/70,
+.bg-background\/95,
+.bg-background\/90,
+.bg-background\/80,
+.bg-card\/95,
+.bg-card\/90,
+.bg-card\/80 {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+}
+
+/* Fix dark theme text visibility */
+.dark {
+  color-scheme: dark;
+}
+
+.dark * {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  color: hsl(var(--foreground)) !important;
+  font-weight: 600;
+}
+
+.dark p, .dark span, .dark div {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark th, .dark td {
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700,
+.dark .text-gray-600,
+.dark .text-gray-500 {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .text-muted-foreground {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.dark input, .dark textarea, .dark select {
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.dark input::placeholder, .dark textarea::placeholder {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.dark .bg-white {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+}
+
+.dark .bg-white * {
+  color: hsl(var(--card-foreground)) !important;
+}
+
+/* Ensure card content has proper contrast */
+.dark [class*="card"] {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.dark [class*="card"] * {
+  color: hsl(var(--card-foreground)) !important;
+}
+
+/* Fix table headers and cells specifically */
+.dark thead th {
+  background-color: hsl(var(--muted)) !important;
+  color: hsl(var(--foreground)) !important;
+  font-weight: 600;
+}
+
+.dark tbody td {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Fix button text */
+.dark button {
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+.dark button[variant="outline"] {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Fix form labels */
+.dark label {
+  color: hsl(var(--foreground)) !important;
+  font-weight: 500;
+}
+
+/* Override any remaining black text */
+.dark .text-black {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 94.1%;
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+}
+
+/* Travel App Theme - Vibrant blue from reference */
+.travel-bg {
+  background: #2563EB;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Centralização responsiva para smartphones - mantém layout original */
+@media (max-width: 768px) {
+  .travel-container {
+    max-width: 100%;
+    padding: 0.75rem;
+  }
+
+  .travel-header {
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .travel-header .flex {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .travel-card {
+    margin: 0 auto;
+    max-width: 100%;
+  }
+
+  .travel-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Centralizar tabelas em mobile */
+  .overflow-x-auto {
+    text-align: center;
+  }
+
+  /* Centralizar botões */
+  .flex.gap-2,
+  .flex.gap-3,
+  .flex.space-x-2,
+  .flex.space-x-3 {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* Animação da barra de progresso de carregamento */
+@keyframes loading-bar {
+  0% { 
+    width: 0%; 
+    opacity: 0.6;
+  }
+  25% { 
+    width: 30%; 
+    opacity: 0.8;
+  }
+  50% { 
+    width: 70%; 
+    opacity: 1;
+  }
+  75% { 
+    width: 90%; 
+    opacity: 0.9;
+  }
+  100% { 
+    width: 100%; 
+    opacity: 0.7;
+  }
+}
+
+.loading-bar {
+  animation: loading-bar 3s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+}
+
+/* Botão "Entrar no Dashboard" com moldura azul destacada */
+.travel-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.5px;
+}
+
+.travel-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4) !important;
+}
+
+.travel-btn:active {
+  transform: translateY(0);
+}
+
+/* LAYOUT UNIVERSAL - MESMO PARA TODAS AS TELAS */
+@media (max-width: 768px) {
+  /* MANTER LAYOUT DESKTOP NO MOBILE */
+  .travel-container {
+    max-width: 100%;
+    padding: 1rem;
+  }
+
+  /* MANTER TABELAS VISÍVEIS NO MOBILE */
+  .desktop-table {
+    display: block !important;
+  }
+
+  .mobile-layout,
+  .mobile-contracts-layout {
+    display: none !important;
+  }
+
+  /* AJUSTAR APENAS RESPONSIVIDADE BÁSICA */
+  .travel-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* BOTÕES MANTÊM LAYOUT HORIZONTAL */
+  .flex.gap-2,
+  .flex.gap-3,
+  .flex.space-x-2,
+  .flex.space-x-3 {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* CARDS COM PADDING RESPONSIVO */
+  .travel-card {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+
+  /* TABELAS RESPONSIVAS */
+  .overflow-x-auto {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 100%;
+    font-size: 0.875rem;
+  }
+
+  th, td {
+    padding: 0.5rem;
+  }
+}

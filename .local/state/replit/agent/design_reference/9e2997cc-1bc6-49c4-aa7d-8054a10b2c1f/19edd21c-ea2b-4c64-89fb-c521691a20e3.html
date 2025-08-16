@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VendaMax - Dashboard de Vendas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        secondary: '#10B981',
+                        accent: '#F59E0B',
+                        error: '#EF4444',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- @COMPONENT: MainLayout -->
+    <div class="flex h-screen overflow-hidden">
+        <!-- @COMPONENT: Sidebar -->
+        <div class="hidden md:flex md:flex-shrink-0">
+            <div class="flex flex-col w-64 bg-white border-r border-gray-200">
+                <!-- Logo -->
+                <div class="flex items-center justify-center h-16 px-4 bg-primary">
+                    <h1 class="text-xl font-bold text-white">VendaMax</h1>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex-1 px-4 py-6 space-y-2">
+                    <a href="#" class="flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg">
+                        <i class="fas fa-chart-line mr-3"></i>
+                        Dashboard
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-handshake mr-3"></i>
+                        Oportunidades
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-file-contract mr-3"></i>
+                        Contratos
+                        <span class="ml-auto bg-error text-white text-xs rounded-full px-2 py-1">3</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-users mr-3"></i>
+                        Clientes
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-chart-bar mr-3"></i>
+                        Relatórios
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-cog mr-3"></i>
+                        Configurações
+                    </a>
+                </nav>
+                
+                <!-- User Profile -->
+                <div class="p-4 border-t border-gray-200">
+                    <div class="flex items-center">
+                        <!-- Profile photo placeholder -->
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150" alt="Foto do usuário" class="w-8 h-8 rounded-full">
+                        <div class="ml-3 flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900" data-bind="user.name">Carlos Silva</p>
+                            <p class="text-xs text-gray-500" data-bind="user.role">Gerente de Vendas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: Sidebar -->
+
+        <!-- @COMPONENT: MainContent -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- @COMPONENT: Header -->
+            <header class="bg-white border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <button class="md:hidden mr-4 text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-bars text-lg"></i>
+                        </button>
+                        <div>
+                            <h1 class="text-2xl font-semibold text-gray-900">Dashboard de Vendas</h1>
+                            <p class="text-sm text-gray-500">Bem-vindo de volta! Veja como está seu desempenho hoje.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <!-- Period Filter -->
+                        <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <option>Últimos 7 dias</option>
+                            <option>Últimos 30 dias</option>
+                            <option>Este mês</option>
+                            <option>Último trimestre</option>
+                        </select>
+                        
+                        <!-- Notifications -->
+                        <button class="relative text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                        </button>
+                        
+                        <!-- Export Button -->
+                        <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-download mr-2"></i>
+                            Exportar
+                        </button>
+                    </div>
+                </div>
+            </header>
+            <!-- @END_COMPONENT: Header -->
+
+            <!-- @COMPONENT: DashboardContent -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Revenue Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Receita Total</p>
+                                <p class="text-2xl font-bold text-gray-900" data-bind="metrics.revenue">R$ 847.500</p>
+                                <p class="text-sm text-secondary mt-1">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    +12.5% vs mês anterior
+                                </p>
+                            </div>
+                            <div class="p-3 bg-blue-50 rounded-full">
+                                <i class="fas fa-dollar-sign text-primary text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leads Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Novos Leads</p>
+                                <p class="text-2xl font-bold text-gray-900" data-bind="metrics.leads">342</p>
+                                <p class="text-sm text-secondary mt-1">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    +8.2% vs mês anterior
+                                </p>
+                            </div>
+                            <div class="p-3 bg-green-50 rounded-full">
+                                <i class="fas fa-user-plus text-secondary text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conversion Rate Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Taxa de Conversão</p>
+                                <p class="text-2xl font-bold text-gray-900" data-bind="metrics.conversion">24.8%</p>
+                                <p class="text-sm text-error mt-1">
+                                    <i class="fas fa-arrow-down mr-1"></i>
+                                    -2.1% vs mês anterior
+                                </p>
+                            </div>
+                            <div class="p-3 bg-yellow-50 rounded-full">
+                                <i class="fas fa-percentage text-accent text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Contracts Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Contratos Pendentes</p>
+                                <p class="text-2xl font-bold text-gray-900" data-bind="metrics.pendingContracts">17</p>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    Requer assinatura
+                                </p>
+                            </div>
+                            <div class="p-3 bg-red-50 rounded-full">
+                                <i class="fas fa-file-signature text-error text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Sales Chart -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900">Vendas por Período</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-sm bg-primary text-white rounded-lg">Dia</button>
+                                <button class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded-lg">Semana</button>
+                                <button class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded-lg">Mês</button>
+                            </div>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="salesChart" data-implementation="Implement Chart.js line chart showing sales over time"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Pipeline Chart -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900">Funil de Vendas</h3>
+                            <button class="text-sm text-primary hover:text-blue-700">Ver detalhes</button>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="pipelineChart" data-implementation="Implement Chart.js funnel or bar chart showing sales pipeline stages"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contract Management Section -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">Contratos Pendentes de Assinatura</h3>
+                            <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-plus mr-2"></i>
+                                Novo Contrato
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data de Criação</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <!-- @MAP: pendingContracts.map(contract => ( -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <!-- Company avatar placeholder -->
+                                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                                    <i class="fas fa-building text-gray-500"></i>
+                                                </div>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900" data-bind="contract.clientName">Empresa ABC Ltda</div>
+                                                <div class="text-sm text-gray-500" data-bind="contract.contactEmail">contato@empresaabc.com.br</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900" data-bind="contract.value">R$ 45.000</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900" data-bind="contract.createdAt">15/01/2024</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
+                                            Aguardando Assinatura
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex space-x-2">
+                                            <button class="text-primary hover:text-blue-700" data-event="click:viewContract">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-secondary hover:text-green-700" data-event="click:sendForSignature">
+                                                <i class="fas fa-paper-plane"></i>
+                                            </button>
+                                            <button class="text-gray-400 hover:text-gray-600" data-event="click:downloadContract">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                                    <i class="fas fa-building text-gray-500"></i>
+                                                </div>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">TechSolutions Inc.</div>
+                                                <div class="text-sm text-gray-500">admin@techsolutions.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">R$ 78.500</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">12/01/2024</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
+                                            Vencido
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex space-x-2">
+                                            <button class="text-primary hover:text-blue-700">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-error hover:text-red-700">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                            </button>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                                    <i class="fas fa-building text-gray-500"></i>
+                                                </div>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Digital Marketing Pro</div>
+                                                <div class="text-sm text-gray-500">contato@digitalmarketing.com.br</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">R$ 32.000</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">18/01/2024</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                                            Enviado para Assinatura
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex space-x-2">
+                                            <button class="text-primary hover:text-blue-700">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-accent hover:text-yellow-700">
+                                                <i class="fas fa-clock"></i>
+                                            </button>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- @END_MAP )) -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Opportunities -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">Oportunidades Recentes</h3>
+                            <button class="text-sm text-primary hover:text-blue-700">Ver todas</button>
+                        </div>
+                    </div>
+                    
+                    <div class="divide-y divide-gray-200">
+                        <!-- @MAP: recentOpportunities.map(opportunity => ( -->
+                        <div class="p-6 hover:bg-gray-50">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
+                                        <!-- Contact photo placeholder -->
+                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150" alt="Cliente potencial" class="w-10 h-10 rounded-full">
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-900" data-bind="opportunity.clientName">João Santos</h4>
+                                        <p class="text-sm text-gray-500" data-bind="opportunity.company">Empresa XYZ Ltda</p>
+                                        <p class="text-xs text-gray-400" data-bind="opportunity.createdAt">Criado há 2 horas</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-right">
+                                        <p class="text-sm font-medium text-gray-900" data-bind="opportunity.value">R$ 25.000</p>
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                            Qualificado
+                                        </span>
+                                    </div>
+                                    <button class="text-gray-400 hover:text-gray-600" data-event="click:viewOpportunity">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-6 hover:bg-gray-50">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
+                                        <img src="https://pixabay.com/get/gf6921215c64caf5bbc2912ee7de1231f2d9edd72f928a7cd17ac31d7708ca093fa0c07d06fa4259410d8137812d48123f1d0bca8e94ece6bcf483b27e96a4597_1280.jpg" alt="Cliente potencial" class="w-10 h-10 rounded-full">
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-900">Maria Oliveira</h4>
+                                        <p class="text-sm text-gray-500">StartupTech Brasil</p>
+                                        <p class="text-xs text-gray-400">Criado há 1 dia</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-right">
+                                        <p class="text-sm font-medium text-gray-900">R$ 67.500</p>
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
+                                            Proposta
+                                        </span>
+                                    </div>
+                                    <button class="text-gray-400 hover:text-gray-600">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-6 hover:bg-gray-50">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
+                                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150" alt="Cliente potencial" class="w-10 h-10 rounded-full">
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-900">Roberto Silva</h4>
+                                        <p class="text-sm text-gray-500">Inovação Digital Ltda</p>
+                                        <p class="text-xs text-gray-400">Criado há 3 dias</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-right">
+                                        <p class="text-sm font-medium text-gray-900">R$ 15.000</p>
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                                            Negociação
+                                        </span>
+                                    </div>
+                                    <button class="text-gray-400 hover:text-gray-600">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+                </div>
+            </main>
+            <!-- @END_COMPONENT: DashboardContent -->
+        </div>
+        <!-- @END_COMPONENT: MainContent -->
+    </div>
+    <!-- @END_COMPONENT: MainLayout -->
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 z-50 md:hidden hidden bg-black bg-opacity-50">
+        <div class="fixed inset-y-0 left-0 w-64 bg-white shadow-xl">
+            <!-- Mobile Navigation Content (Same as sidebar) -->
+            <div class="flex items-center justify-between h-16 px-4 bg-primary">
+                <h1 class="text-xl font-bold text-white">VendaMax</h1>
+                <button id="closeMobileMenu" class="text-white">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            <!-- Rest of navigation identical to sidebar -->
+        </div>
+    </div>
+
+    <script>
+        // TODO: Implement business logic, API calls, and state management
+        
+        (function() {
+            // Mobile menu toggle functionality
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const closeMobileMenuBtn = document.getElementById('closeMobileMenu');
+            
+            // Chart initialization placeholders
+            function initializeCharts() {
+                // Sales Chart
+                const salesCtx = document.getElementById('salesChart');
+                if (salesCtx) {
+                    // TODO: Initialize Chart.js line chart with real sales data
+                    const salesChart = new Chart(salesCtx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun'],
+                            datasets: [{
+                                label: 'Vendas (R$)',
+                                data: [65000, 59000, 80000, 81000, 56000, 55000],
+                                borderColor: '#2563EB',
+                                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Pipeline Chart
+                const pipelineCtx = document.getElementById('pipelineChart');
+                if (pipelineCtx) {
+                    // TODO: Initialize Chart.js bar chart with pipeline data
+                    const pipelineChart = new Chart(pipelineCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Leads', 'Qualificados', 'Proposta', 'Negociação', 'Fechados'],
+                            datasets: [{
+                                label: 'Quantidade',
+                                data: [150, 89, 45, 32, 18],
+                                backgroundColor: [
+                                    '#3B82F6',
+                                    '#10B981',
+                                    '#F59E0B',
+                                    '#EF4444',
+                                    '#8B5CF6'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Initialize on DOM load
+            document.addEventListener('DOMContentLoaded', function() {
+                initializeCharts();
+            });
+
+            // TODO: Add real-time data updates
+            // TODO: Implement notification handling
+            // TODO: Add contract signature workflow
+            // TODO: Implement data filtering and export functionality
+        })();
+    </script>
+</body>
+</html>
