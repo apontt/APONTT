@@ -488,6 +488,8 @@
             opacity: 0;
             visibility: hidden;
             transition: var(--transition);
+            padding: 20px;
+            overflow-y: auto;
         }
 
         .modal-overlay.active {
@@ -500,11 +502,12 @@
             border-radius: var(--border-radius);
             width: 90%;
             max-width: 600px;
-            max-height: 90vh;
+            max-height: 85vh;
             overflow-y: auto;
             box-shadow: var(--box-shadow);
             transform: translateY(-50px);
             transition: var(--transition);
+            position: relative;
         }
 
         .modal-overlay.active .modal {
@@ -1816,6 +1819,10 @@
                             <option value="Pendente">Pendente</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Valor do Contrato (R$):</label>
+                        <input type="number" class="form-control" id="admin-client-contract-value" step="0.01" min="0" placeholder="Ex: 2500.00" required>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -1857,6 +1864,10 @@
                             <option value="inactive">Inativo</option>
                             <option value="pending">Pendente</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="contract-value">Valor do Contrato (R$)</label>
+                        <input type="number" class="form-control" id="contract-value" step="0.01" min="0" placeholder="Ex: 2500.00" required>
                     </div>
                 </form>
             </div>
@@ -2412,6 +2423,10 @@
                             <option value="Pendente">Pendente</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Valor do Contrato (R$):</label>
+                        <input type="number" class="form-control" id="partner-client-contract-value" step="0.01" min="0" placeholder="Ex: 2500.00" required>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -2636,7 +2651,7 @@
                             <p><strong>CONTRATADA:</strong> APONTTPAY</p>
                             <br>
                             <p><strong>OBJETO:</strong> Prestação de serviços de regularização e consultoria.</p>
-                            <p><strong>VALOR:</strong> R$ 2.500,00 (dois mil e quinhentos reais)</p>
+                            <p><strong>VALOR:</strong> <span data-contract-value>R$ 2.500,00</span></p>
                             <p><strong>PRAZO:</strong> 90 dias</p>
                             <p><strong>DATA:</strong> <span id="contract-date"></span></p>
                         </div>
@@ -2700,11 +2715,176 @@
                         <label class="form-label">CPF/CNPJ:</label>
                         <input type="text" class="form-control" id="reseller-client-document" required>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Valor do Contrato (R$):</label>
+                        <input type="number" class="form-control" id="reseller-client-contract-value" step="0.01" min="0" placeholder="Ex: 2500.00" required>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" onclick="saveResellerClient()">Salvar Cliente</button>
                 <button class="btn" onclick="closeResellerClientModal()" style="background: #eee; color: #333;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Parceiro -->
+    <div class="modal-overlay" id="partner-add-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Adicionar Parceiro</h3>
+                <button class="modal-close" onclick="document.getElementById('partner-add-modal').classList.remove('active')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-partner-form">
+                    <div class="form-group">
+                        <label class="form-label">Nome da Empresa:</label>
+                        <input type="text" class="form-control" id="add-partner-company" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CPF/CNPJ:</label>
+                        <input type="text" class="form-control" id="add-partner-document" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email:</label>
+                        <input type="email" class="form-control" id="add-partner-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Telefone:</label>
+                        <input type="tel" class="form-control" id="add-partner-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Responsável:</label>
+                        <input type="text" class="form-control" id="add-partner-responsible" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status:</label>
+                        <select class="form-control" id="add-partner-status" required>
+                            <option value="active">Ativo</option>
+                            <option value="pending">Pendente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observações:</label>
+                        <textarea class="form-control" id="add-partner-observations" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveNewPartner()">Salvar Parceiro</button>
+                <button class="btn" onclick="document.getElementById('partner-add-modal').classList.remove('active')" style="background: #eee; color: #333;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Parceiro -->
+    <div class="modal-overlay" id="partner-edit-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Parceiro</h3>
+                <button class="modal-close" onclick="document.getElementById('partner-edit-modal').classList.remove('active')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-partner-form">
+                    <input type="hidden" id="edit-partner-id">
+                    <div class="form-group">
+                        <label class="form-label">Nome da Empresa:</label>
+                        <input type="text" class="form-control" id="edit-partner-company" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CPF/CNPJ:</label>
+                        <input type="text" class="form-control" id="edit-partner-document" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email:</label>
+                        <input type="email" class="form-control" id="edit-partner-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Telefone:</label>
+                        <input type="tel" class="form-control" id="edit-partner-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Responsável:</label>
+                        <input type="text" class="form-control" id="edit-partner-responsible" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status:</label>
+                        <select class="form-control" id="edit-partner-status" required>
+                            <option value="active">Ativo</option>
+                            <option value="pending">Pendente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observações:</label>
+                        <textarea class="form-control" id="edit-partner-observations" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveEditedPartner()">Salvar Alterações</button>
+                <button class="btn" onclick="document.getElementById('partner-edit-modal').classList.remove('active')" style="background: #eee; color: #333;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Visualizar Parceiro -->
+    <div class="modal-overlay" id="partner-view-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalhes do Parceiro</h3>
+                <button class="modal-close" onclick="document.getElementById('partner-view-modal').classList.remove('active')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <h4 style="color: var(--primary); margin-bottom: 15px;">Informações da Empresa</h4>
+                        <div class="info-item">
+                            <strong>Empresa:</strong>
+                            <span id="view-partner-company"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>CPF/CNPJ:</strong>
+                            <span id="view-partner-document"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Email:</strong>
+                            <span id="view-partner-email"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Telefone:</strong>
+                            <span id="view-partner-phone"></span>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--primary); margin-bottom: 15px;">Status & Datas</h4>
+                        <div class="info-item">
+                            <strong>Responsável:</strong>
+                            <span id="view-partner-responsible"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Status:</strong>
+                            <span id="view-partner-status"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Cadastrado em:</strong>
+                            <span id="view-partner-created"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Atualizado em:</strong>
+                            <span id="view-partner-updated"></span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">Observações</h4>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary);">
+                        <span id="view-partner-observations"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="editPartner(document.getElementById('edit-partner-id').value || 1)">Editar Parceiro</button>
+                <button class="btn" onclick="document.getElementById('partner-view-modal').classList.remove('active')" style="background: #eee; color: #333;">Fechar</button>
             </div>
         </div>
     </div>
@@ -2797,8 +2977,8 @@
         // Dados padrão do sistema
         const defaultSystemData = {
             users: [
-                { username: 'admin', password: 'apontt2025!', name: 'Administrador', type: 'admin' },
-                { username: 'parceiro', password: '123456', name: 'Parceiro', type: 'partner' }
+                { username: 'admin', password: 'admin123', name: 'Administrador', type: 'admin' },
+                { username: 'parceiro', password: 'parceiro123', name: 'Parceiro', type: 'partner' }
             ],
             clients: [],
             partnerClients: {
@@ -2807,7 +2987,7 @@
             },
             partnerResellers: {
                 1: [
-                    {id: 1, name: 'João Revendedor', email: 'joao@revendedor.com', phone: '(11) 99999-9999', clients: 5, revenue: 'R$ 4.200,00', commission: '10%', partnerId: 1, username: 'reseller1', password: 'joao123'}
+                    {id: 1, name: 'João Revendedor', email: 'joao@revendedor.com', phone: '(11) 99999-9999', clients: 5, revenue: 'R$ 4.200,00', commission: '10%', partnerId: 1, username: 'reseller1', password: 'reseller123'}
                 ],
                 2: []
             },
@@ -2831,7 +3011,7 @@
                     accessCount: 15,
                     lastAccess: '20/01/2024 14:30',
                     username: 'partner1',
-                    password: 'tech123'
+                    password: 'partner123'
                 },
                 {
                     id: 2,
@@ -2849,7 +3029,7 @@
                     accessCount: 3,
                     lastAccess: '18/01/2024 09:15',
                     username: 'partner2',
-                    password: 'inova123'
+                    password: 'partner123'
                 }
             ],
             contracts: [],
@@ -3153,7 +3333,8 @@
             }
             if (addPartnerBtn) {
                 addPartnerBtn.addEventListener('click', () => {
-                    showNotification('info', 'Parceiros', 'Funcionalidade de adicionar parceiro');
+                    document.getElementById('partner-add-modal').classList.add('active');
+                    document.getElementById('add-partner-form').reset();
                 });
             }
             if (addClientBtn2) {
@@ -3412,6 +3593,174 @@
             loadAdminData();
         }
         
+        // Carregar dados do admin
+        function loadAdminData() {
+            // Atualizar contador de parceiros no dashboard
+            updatePartnersCount();
+            
+            // Carregar clientes de todos os parceiros na seção de clientes
+            loadAllClientsForAdmin();
+        }
+        
+        // Carregar todos os clientes para o admin
+        function loadAllClientsForAdmin() {
+            const tbody = document.querySelector('#admin-all-clients-table');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            let totalClients = 0;
+            
+            // Contar clientes por parceiro
+            let partner1Clients = 0;
+            let partner2Clients = 0;
+            
+            // Carregar clientes de cada parceiro
+            for (const partnerId in systemData.partnerClients) {
+                const clients = systemData.partnerClients[partnerId] || [];
+                const partner = systemData.partners.find(p => p.id == partnerId);
+                
+                if (partnerId == 1) partner1Clients = clients.length;
+                if (partnerId == 2) partner2Clients = clients.length;
+                
+                clients.forEach(client => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><input type="checkbox" class="admin-client-checkbox" onchange="updateAdminBulkButtons()"></td>
+                        <td>${client.id}</td>
+                        <td>${client.name}</td>
+                        <td>${client.document}</td>
+                        <td>${client.email}</td>
+                        <td>${client.phone}</td>
+                        <td>${partner ? partner.company : 'Parceiro ' + partnerId}</td>
+                        <td><span class="status ${client.status === 'Ativo' ? 'status-active' : 'status-inactive'}">${client.status}</span></td>
+                        <td><span class="status ${client.process === 'Regularizado' ? 'status-active' : 'status-pending'}">${client.process}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary btn-sm" onclick="editAdminClient('${client.id}', ${partnerId})" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-primary btn-sm" onclick="viewAdminClient('${client.id}', ${partnerId})" title="Visualizar">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-primary btn-sm" onclick="toggleAdminClientProcess('${client.id}', ${partnerId})" title="Regularizar">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="btn btn-primary btn-sm" onclick="deleteAdminClient('${client.id}', ${partnerId})" title="Excluir">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                    totalClients++;
+                });
+            }
+            
+            // Atualizar contadores
+            const totalClientsCard = document.getElementById('admin-total-clients');
+            const partner1Card = document.getElementById('admin-partner1-clients');
+            const partner2Card = document.getElementById('admin-partner2-clients');
+            
+            if (totalClientsCard) totalClientsCard.textContent = totalClients;
+            if (partner1Card) partner1Card.textContent = partner1Clients;
+            if (partner2Card) partner2Card.textContent = partner2Clients;
+        }
+        
+        // Funções para gerenciar clientes do admin
+        function addAdminClient() {
+            document.getElementById('admin-client-modal').classList.add('active');
+        }
+        
+        function closeAdminClientModal() {
+            document.getElementById('admin-client-modal').classList.remove('active');
+            document.getElementById('admin-client-form').reset();
+        }
+        
+        function saveAdminClient() {
+            const name = document.getElementById('admin-client-name').value;
+            const email = document.getElementById('admin-client-email').value;
+            const phone = document.getElementById('admin-client-phone').value;
+            const document = document.getElementById('admin-client-document').value;
+            const partnerId = document.getElementById('admin-client-partner').value;
+            const status = document.getElementById('admin-client-status').value;
+            const contractValue = document.getElementById('admin-client-contract-value').value;
+            
+            if (!name || !email || !phone || !document || !partnerId || !contractValue) {
+                showNotification('error', 'Erro', 'Todos os campos incluindo valor do contrato são obrigatórios');
+                return;
+            }
+            
+            // Criar novo cliente
+            const clientId = 'CLI' + String(Date.now()).slice(-3).padStart(3, '0');
+            const newClient = {
+                id: clientId,
+                name: name,
+                email: email,
+                phone: phone,
+                document: document,
+                status: status,
+                process: 'Em Processo',
+                partnerId: parseInt(partnerId),
+                contractValue: parseFloat(contractValue)
+            };
+            
+            // Adicionar aos dados do parceiro
+            if (!systemData.partnerClients[partnerId]) {
+                systemData.partnerClients[partnerId] = [];
+            }
+            systemData.partnerClients[partnerId].push(newClient);
+            
+            // Salvar dados
+            saveSystemData();
+            
+            // Recarregar tabela
+            loadAllClientsForAdmin();
+            
+            // Fechar modal
+            closeAdminClientModal();
+            
+            showNotification('success', 'Salvo', `Cliente ${name} adicionado com sucesso`);
+        }
+        
+        function setupNotificationListeners() {
+            const notificationsBtn = document.getElementById('notifications-btn');
+            const messagesBtn = document.getElementById('messages-btn');
+            
+            if (notificationsBtn) {
+                notificationsBtn.addEventListener('click', () => {
+                    showNotification('info', 'Notificações', 'Você não tem novas notificações');
+                });
+            }
+            
+            if (messagesBtn) {
+                messagesBtn.addEventListener('click', () => {
+                    showNotification('info', 'Mensagens', 'Você não tem novas mensagens');
+                });
+            }
+        }
+        
+        function setupSearchListener() {
+            const searchInput = document.getElementById('global-search');
+            if (searchInput) {
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        const query = e.target.value.trim();
+                        if (query) {
+                            showNotification('info', 'Busca', `Buscando por: "${query}"`);
+                        }
+                    }
+                });
+                
+                // Atalho Ctrl+K
+                document.addEventListener('keydown', (e) => {
+                    if (e.ctrlKey && e.key === 'k') {
+                        e.preventDefault();
+                        searchInput.focus();
+                    }
+                });
+            }
+        }
+        
         // Inicializar aplicação
         document.addEventListener('DOMContentLoaded', function() {
             // Verificar sessão ativa primeiro
@@ -3511,8 +3860,9 @@
                 const email = document.getElementById('email').value;
                 const phone = document.getElementById('phone').value;
                 const document = document.getElementById('document').value;
+                const contractValue = document.getElementById('contract-value').value;
                 
-                if (name && email) {
+                if (name && email && contractValue) {
                     // Adicionar cliente aos dados do sistema
                     const newClient = {
                         id: 'CLI' + Date.now(),
@@ -3522,7 +3872,8 @@
                         document: document,
                         status: 'Ativo',
                         process: 'Em Processo',
-                        createdAt: new Date().toISOString()
+                        createdAt: new Date().toISOString(),
+                        contractValue: parseFloat(contractValue)
                     };
                     
                     systemData.clients.push(newClient);
@@ -3537,7 +3888,7 @@
                     // Atualizar tabela se estiver na seção de clientes
                     addClientRow(name, email, phone, document);
                 } else {
-                    showNotification('error', 'Erro', 'Preencha pelo menos nome e email');
+                    showNotification('error', 'Erro', 'Preencha nome, email e valor do contrato');
                 }
             }
         });
@@ -3634,6 +3985,18 @@
                 showNotification('error', 'Erro', 'Parceiro não encontrado');
                 return;
             }
+            
+            // Abrir modal de edição
+            document.getElementById('partner-edit-modal').classList.add('active');
+            document.getElementById('edit-partner-company').value = partner.company;
+            document.getElementById('edit-partner-document').value = partner.document;
+            document.getElementById('edit-partner-email').value = partner.email;
+            document.getElementById('edit-partner-phone').value = partner.phone;
+            document.getElementById('edit-partner-responsible').value = partner.responsible;
+            document.getElementById('edit-partner-status').value = partner.status;
+            document.getElementById('edit-partner-observations').value = partner.observations || '';
+            document.getElementById('edit-partner-id').value = id;
+            
             showNotification('info', 'Editar', `Editando parceiro: ${partner.company}`);
         }
         
@@ -3643,6 +4006,19 @@
                 showNotification('error', 'Erro', 'Parceiro não encontrado');
                 return;
             }
+            
+            // Abrir modal de visualização
+            document.getElementById('partner-view-modal').classList.add('active');
+            document.getElementById('view-partner-company').textContent = partner.company;
+            document.getElementById('view-partner-document').textContent = partner.document;
+            document.getElementById('view-partner-email').textContent = partner.email;
+            document.getElementById('view-partner-phone').textContent = partner.phone;
+            document.getElementById('view-partner-responsible').textContent = partner.responsible;
+            document.getElementById('view-partner-status').textContent = partner.status === 'active' ? 'Ativo' : 'Pendente';
+            document.getElementById('view-partner-observations').textContent = partner.observations || 'Nenhuma observação';
+            document.getElementById('view-partner-created').textContent = partner.createdAt;
+            document.getElementById('view-partner-updated').textContent = partner.updatedAt;
+            
             showNotification('info', 'Visualizar', `Visualizando parceiro: ${partner.company}`);
         }
         
@@ -3712,7 +4088,17 @@
             
             if (partnerId) {
                 document.getElementById('partner-link-modal').classList.remove('active');
-                simulatePartnerAccess(partnerId);
+                showPartnerLogin();
+                
+                // Preencher automaticamente as credenciais
+                setTimeout(() => {
+                    const partner = systemData.partners.find(p => p.id === partnerId);
+                    if (partner) {
+                        document.getElementById('partner-username').value = partner.username;
+                        document.getElementById('partner-password').value = partner.password;
+                        showNotification('info', 'Acesso Simulado', `Credenciais preenchidas para ${partner.company}`);
+                    }
+                }, 500);
             }
         }
         
@@ -3724,19 +4110,194 @@
             const partner = systemData.partners.find(p => p.id === id);
             if (!partner) return;
             
-            if (confirm(`Excluir parceiro "${partner.company}"?`)) {
+            if (confirm(`Tem certeza que deseja excluir o parceiro "${partner.company}"?\n\nEsta ação não pode ser desfeita.`)) {
                 partner.deleted = true;
                 partner.updatedAt = new Date().toISOString().split('T')[0];
+                
+                // Salvar alterações
+                saveSystemData();
                 
                 const row = document.querySelector(`tr[data-partner-id="${id}"]`);
                 if (row) {
                     row.style.transition = 'all 0.3s ease';
                     row.style.opacity = '0';
                     row.style.transform = 'translateX(-100%)';
-                    setTimeout(() => row.remove(), 300);
+                    setTimeout(() => {
+                        row.remove();
+                        updatePartnersCount();
+                    }, 300);
                 }
                 
-                showNotification('success', 'Excluído', 'Parceiro removido');
+                showNotification('success', 'Excluído', `Parceiro "${partner.company}" removido com sucesso`);
+            }
+        }
+        
+        // Função para adicionar novo parceiro
+        function addPartner() {
+            document.getElementById('partner-add-modal').classList.add('active');
+            document.getElementById('add-partner-form').reset();
+        }
+        
+        // Função para salvar parceiro editado
+        function saveEditedPartner() {
+            const id = parseInt(document.getElementById('edit-partner-id').value);
+            const partner = systemData.partners.find(p => p.id === id);
+            
+            if (!partner) {
+                showNotification('error', 'Erro', 'Parceiro não encontrado');
+                return;
+            }
+            
+            const company = document.getElementById('edit-partner-company').value;
+            const document = document.getElementById('edit-partner-document').value;
+            const email = document.getElementById('edit-partner-email').value;
+            const phone = document.getElementById('edit-partner-phone').value;
+            const responsible = document.getElementById('edit-partner-responsible').value;
+            const status = document.getElementById('edit-partner-status').value;
+            const observations = document.getElementById('edit-partner-observations').value;
+            
+            if (!company || !document || !email || !phone || !responsible) {
+                showNotification('error', 'Erro', 'Todos os campos obrigatórios devem ser preenchidos');
+                return;
+            }
+            
+            // Atualizar dados
+            partner.company = company;
+            partner.document = document;
+            partner.email = email;
+            partner.phone = phone;
+            partner.responsible = responsible;
+            partner.status = status;
+            partner.observations = observations;
+            partner.updatedAt = new Date().toISOString().split('T')[0];
+            
+            // Salvar no localStorage
+            saveSystemData();
+            
+            // Atualizar tabela
+            updatePartnerRow(id, partner);
+            
+            // Fechar modal
+            document.getElementById('partner-edit-modal').classList.remove('active');
+            
+            showNotification('success', 'Atualizado', `Parceiro "${company}" atualizado com sucesso`);
+        }
+        
+        // Função para salvar novo parceiro
+        function saveNewPartner() {
+            const company = document.getElementById('add-partner-company').value;
+            const document = document.getElementById('add-partner-document').value;
+            const email = document.getElementById('add-partner-email').value;
+            const phone = document.getElementById('add-partner-phone').value;
+            const responsible = document.getElementById('add-partner-responsible').value;
+            const status = document.getElementById('add-partner-status').value;
+            const observations = document.getElementById('add-partner-observations').value;
+            
+            if (!company || !document || !email || !phone || !responsible) {
+                showNotification('error', 'Erro', 'Todos os campos obrigatórios devem ser preenchidos');
+                return;
+            }
+            
+            // Gerar novo ID
+            const newId = Math.max(...systemData.partners.map(p => p.id)) + 1;
+            
+            // Criar novo parceiro
+            const newPartner = {
+                id: newId,
+                company: company,
+                document: document,
+                email: email,
+                phone: phone,
+                responsible: responsible,
+                status: status,
+                observations: observations,
+                accessLink: `/parceiros/${newId}`,
+                createdAt: new Date().toISOString().split('T')[0],
+                updatedAt: new Date().toISOString().split('T')[0],
+                deleted: false,
+                accessCount: 0,
+                lastAccess: 'Nunca',
+                username: `partner${newId}`,
+                password: 'partner123'
+            };
+            
+            // Adicionar aos dados
+            systemData.partners.push(newPartner);
+            systemData.partnerClients[newId] = [];
+            systemData.partnerResellers[newId] = [];
+            
+            // Salvar no localStorage
+            saveSystemData();
+            
+            // Adicionar à tabela
+            addPartnerToTable(newPartner);
+            
+            // Fechar modal
+            document.getElementById('partner-add-modal').classList.remove('active');
+            document.getElementById('add-partner-form').reset();
+            
+            showNotification('success', 'Adicionado', `Parceiro "${company}" adicionado com sucesso`);
+        }
+        
+        // Função para atualizar linha da tabela
+        function updatePartnerRow(id, partner) {
+            const row = document.querySelector(`tr[data-partner-id="${id}"]`);
+            if (row) {
+                row.cells[0].textContent = partner.company;
+                row.cells[1].textContent = partner.document;
+                row.cells[2].textContent = partner.email;
+                row.cells[3].textContent = partner.responsible;
+                row.cells[4].textContent = partner.phone;
+                row.cells[5].innerHTML = `<span class="status ${partner.status === 'active' ? 'status-active' : 'status-pending'}">${partner.status === 'active' ? 'Ativo' : 'Pendente'}</span>`;
+                row.cells[6].textContent = partner.updatedAt;
+            }
+        }
+        
+        // Função para adicionar parceiro à tabela
+        function addPartnerToTable(partner) {
+            const tbody = document.querySelector('#partners-table tbody');
+            const row = document.createElement('tr');
+            row.setAttribute('data-partner-id', partner.id);
+            
+            row.innerHTML = `
+                <td>${partner.company}</td>
+                <td>${partner.document}</td>
+                <td>${partner.email}</td>
+                <td>${partner.responsible}</td>
+                <td>${partner.phone}</td>
+                <td><span class="status ${partner.status === 'active' ? 'status-active' : 'status-pending'}">${partner.status === 'active' ? 'Ativo' : 'Pendente'}</span></td>
+                <td>${partner.createdAt}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-sm" onclick="editPartner(${partner.id})" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="viewPartner(${partner.id})" title="Visualizar">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="generatePartnerLink(${partner.id})" title="Gerar Link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="viewPartnerAccess(${partner.id})" title="Ver Acessos">
+                            <i class="fas fa-chart-line"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="deletePartner(${partner.id})" title="Excluir">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+            updatePartnersCount();
+        }
+        
+        // Função para atualizar contador de parceiros
+        function updatePartnersCount() {
+            const activePartners = systemData.partners.filter(p => !p.deleted).length;
+            const dashboardCard = document.querySelector('.card .card-value');
+            if (dashboardCard) {
+                dashboardCard.textContent = activePartners;
             }
         }
         
@@ -3879,8 +4440,9 @@
             const phone = document.getElementById('partner-client-phone').value;
             const document = document.getElementById('partner-client-document').value;
             const status = document.getElementById('partner-client-status').value;
+            const contractValue = document.getElementById('partner-client-contract-value').value;
             
-            if (name && email && phone && document && currentPartnerId) {
+            if (name && email && phone && document && contractValue && currentPartnerId) {
                 // Adicionar ao sistema de dados
                 if (!systemData.partnerClients[currentPartnerId]) {
                     systemData.partnerClients[currentPartnerId] = [];
@@ -3896,7 +4458,8 @@
                     document: document,
                     status: status,
                     process: 'Em Processo',
-                    partnerId: currentPartnerId
+                    partnerId: currentPartnerId,
+                    contractValue: parseFloat(contractValue)
                 };
                 
                 systemData.partnerClients[currentPartnerId].push(newClient);
@@ -4176,8 +4739,9 @@
             const email = document.getElementById('reseller-client-email').value;
             const phone = document.getElementById('reseller-client-phone').value;
             const document = document.getElementById('reseller-client-document').value;
+            const contractValue = document.getElementById('reseller-client-contract-value').value;
             
-            if (name && email && phone && document && currentResellerId) {
+            if (name && email && phone && document && contractValue && currentResellerId) {
                 if (!systemData.resellerClients[currentResellerId]) {
                     systemData.resellerClients[currentResellerId] = [];
                 }
@@ -4190,7 +4754,8 @@
                     document: document,
                     status: 'Ativo',
                     process: 'Em Processo',
-                    resellerId: currentResellerId
+                    resellerId: currentResellerId,
+                    contractValue: parseFloat(contractValue)
                 };
                 
                 systemData.resellerClients[currentResellerId].push(newClient);
@@ -4599,6 +5164,239 @@
         
         function closeClientDetailsModal() {
             document.getElementById('client-details-modal').classList.remove('active');
+        }
+        
+        // Função para mostrar abas do cliente
+        function showClientTab(tabName) {
+            // Remover active de todos os botões
+            document.querySelectorAll('.client-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Ocultar todas as abas
+            document.querySelectorAll('.client-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Ativar aba selecionada
+            const activeBtn = document.querySelector(`[onclick="showClientTab('${tabName}')"]`);
+            const activeContent = document.getElementById(`client-tab-${tabName}`);
+            
+            if (activeBtn) activeBtn.classList.add('active');
+            if (activeContent) activeContent.classList.add('active');
+        }
+        
+        function editAdminClient(clientId, partnerId) {
+            const clients = systemData.partnerClients[partnerId] || [];
+            const client = clients.find(c => c.id === clientId);
+            if (client) {
+                showNotification('info', 'Editar', `Editando cliente: ${client.name}`);
+            }
+        }
+        
+        function viewAdminClient(clientId, partnerId) {
+            const clients = systemData.partnerClients[partnerId] || [];
+            const client = clients.find(c => c.id === clientId);
+            if (client) {
+                // Preencher modal de detalhes
+                document.getElementById('client-detail-name').textContent = client.name;
+                document.getElementById('client-detail-id').textContent = client.id;
+                document.getElementById('client-detail-email').textContent = client.email;
+                document.getElementById('client-detail-phone').textContent = client.phone;
+                document.getElementById('client-detail-document').textContent = client.document;
+                document.getElementById('client-detail-status').textContent = client.status;
+                document.getElementById('client-detail-process').textContent = client.process;
+                
+                const partner = systemData.partners.find(p => p.id == partnerId);
+                document.getElementById('client-detail-partner').textContent = partner ? partner.company : 'Parceiro ' + partnerId;
+                
+                // Resetar para primeira aba
+                showClientTab('info');
+                
+                // Abrir modal
+                document.getElementById('client-details-modal').classList.add('active');
+            }
+        }
+        
+        function toggleAdminClientProcess(clientId, partnerId) {
+            const clients = systemData.partnerClients[partnerId] || [];
+            const client = clients.find(c => c.id === clientId);
+            
+            if (client) {
+                client.process = client.process === 'Em Processo' ? 'Regularizado' : 'Em Processo';
+                saveSystemData();
+                loadAllClientsForAdmin();
+                showNotification('success', 'Atualizado', `Status do cliente ${client.name} atualizado`);
+            }
+        }
+        
+        function deleteAdminClient(clientId, partnerId) {
+            const clients = systemData.partnerClients[partnerId] || [];
+            const clientIndex = clients.findIndex(c => c.id === clientId);
+            
+            if (clientIndex !== -1) {
+                const client = clients[clientIndex];
+                if (confirm(`Excluir cliente "${client.name}"?`)) {
+                    clients.splice(clientIndex, 1);
+                    saveSystemData();
+                    loadAllClientsForAdmin();
+                    showNotification('success', 'Excluído', `Cliente "${client.name}" removido`);
+                }
+            }
+        }
+        
+        function toggleAllAdminClients() {
+            const selectAll = document.getElementById('admin-select-all-clients');
+            const checkboxes = document.querySelectorAll('.admin-client-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+            
+            updateAdminBulkButtons();
+        }
+        
+        function updateAdminBulkButtons() {
+            const checkboxes = document.querySelectorAll('.admin-client-checkbox:checked');
+            const bulkRegularizeBtn = document.getElementById('admin-bulk-regularize-btn');
+            const bulkDeleteBtn = document.getElementById('admin-bulk-delete-btn');
+            
+            if (checkboxes.length > 0) {
+                if (bulkRegularizeBtn) bulkRegularizeBtn.style.display = 'inline-flex';
+                if (bulkDeleteBtn) bulkDeleteBtn.style.display = 'inline-flex';
+            } else {
+                if (bulkRegularizeBtn) bulkRegularizeBtn.style.display = 'none';
+                if (bulkDeleteBtn) bulkDeleteBtn.style.display = 'none';
+            }
+        }
+        
+        function bulkRegularizeClients() {
+            const checkboxes = document.querySelectorAll('.admin-client-checkbox:checked');
+            let count = 0;
+            
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                const clientId = row.cells[1].textContent;
+                
+                // Encontrar cliente nos dados
+                for (const partnerId in systemData.partnerClients) {
+                    const clients = systemData.partnerClients[partnerId] || [];
+                    const client = clients.find(c => c.id === clientId);
+                    if (client && client.process === 'Em Processo') {
+                        client.process = 'Regularizado';
+                        count++;
+                    }
+                }
+            });
+            
+            if (count > 0) {
+                saveSystemData();
+                loadAllClientsForAdmin();
+                showNotification('success', 'Regularizado', `${count} cliente(s) regularizado(s)`);
+            }
+        }
+        
+        function bulkDeleteClients() {
+            const checkboxes = document.querySelectorAll('.admin-client-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                showNotification('warning', 'Aviso', 'Nenhum cliente selecionado');
+                return;
+            }
+            
+            if (confirm(`Excluir ${checkboxes.length} cliente(s) selecionado(s)?`)) {
+                let count = 0;
+                
+                checkboxes.forEach(checkbox => {
+                    const row = checkbox.closest('tr');
+                    const clientId = row.cells[1].textContent;
+                    
+                    // Remover cliente dos dados
+                    for (const partnerId in systemData.partnerClients) {
+                        const clients = systemData.partnerClients[partnerId] || [];
+                        const clientIndex = clients.findIndex(c => c.id === clientId);
+                        if (clientIndex !== -1) {
+                            clients.splice(clientIndex, 1);
+                            count++;
+                            break;
+                        }
+                    }
+                });
+                
+                if (count > 0) {
+                    saveSystemData();
+                    loadAllClientsForAdmin();
+                    showNotification('success', 'Excluído', `${count} cliente(s) removido(s)`);
+                }
+            }
+        }
+        
+        // Função para gerar contrato com valor específico
+        function generateClientContractLink(btn) {
+            const row = btn.closest('tr');
+            const clientName = row.cells[2].textContent;
+            const clientEmail = row.cells[4].textContent;
+            const clientPhone = row.cells[5].textContent;
+            const clientDocument = row.cells[3].textContent;
+            
+            // Encontrar cliente nos dados para obter valor do contrato
+            let contractValue = 'R$ 2.500,00';
+            
+            // Buscar cliente nos dados do sistema
+            for (const partnerId in systemData.partnerClients) {
+                const clients = systemData.partnerClients[partnerId] || [];
+                const foundClient = clients.find(c => c.name === clientName && c.email === clientEmail);
+                if (foundClient && foundClient.contractValue) {
+                    contractValue = `R$ ${foundClient.contractValue.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                    break;
+                }
+            }
+            
+            // Buscar também nos clientes de revendedores
+            for (const resellerId in systemData.resellerClients) {
+                const clients = systemData.resellerClients[resellerId] || [];
+                const foundClient = clients.find(c => c.name === clientName && c.email === clientEmail);
+                if (foundClient && foundClient.contractValue) {
+                    contractValue = `R$ ${foundClient.contractValue.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                    break;
+                }
+            }
+            
+            // Abrir página de assinatura com dados do cliente
+            openContractSignaturePage(clientName, clientEmail, clientPhone, clientDocument, contractValue);
+        }
+        
+        // Função para abrir página de assinatura de contrato
+        function openContractSignaturePage(clientName, clientEmail, clientPhone, clientDocument, contractValue) {
+            // Preencher dados do cliente na página de assinatura
+            document.getElementById('client-name').value = clientName;
+            document.getElementById('client-email').value = clientEmail;
+            document.getElementById('client-phone').value = clientPhone;
+            document.getElementById('client-document').value = clientDocument;
+            
+            // Preencher dados no contrato
+            document.getElementById('contract-client-name').textContent = clientName;
+            document.getElementById('contract-client-email').textContent = clientEmail;
+            document.getElementById('contract-client-phone').textContent = clientPhone;
+            document.getElementById('contract-client-document').textContent = clientDocument;
+            
+            // Atualizar todas as referências ao valor no contrato
+            const valueElements = document.querySelectorAll('#contract-signature-page [data-contract-value]');
+            valueElements.forEach(el => {
+                el.textContent = contractValue;
+            });
+            
+            // Gerar ID do contrato
+            const contractId = 'CTR' + Date.now();
+            document.getElementById('contract-id').textContent = contractId;
+            
+            // Definir data atual
+            document.getElementById('contract-date').textContent = new Date().toLocaleDateString('pt-BR');
+            
+            // Mostrar página de assinatura
+            document.getElementById('contract-signature-page').style.display = 'block';
+            
+            showNotification('success', 'Contrato Gerado', `Contrato para ${clientName} no valor de ${contractValue}`);
         }
         
         function showClientTab(tab) {
