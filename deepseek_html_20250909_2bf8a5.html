@@ -905,31 +905,7 @@
                 <button type="submit" class="login-btn">Entrar no Sistema</button>
             </form>
 
-            <div class="credentials-info">
-                <h3><i class="fas fa-info-circle"></i> Credenciais de Acesso</h3>
-                <div style="margin-bottom: 15px;">
-                    <strong>Administrador:</strong>
-                    <div class="credential-item">
-                        <span class="credential-label">Usuário:</span>
-                        <span>admin</span>
-                    </div>
-                    <div class="credential-item">
-                        <span class="credential-label">Senha:</span>
-                        <span>apontt2025!</span>
-                    </div>
-                </div>
-                <div>
-                    <strong>Parceiro:</strong>
-                    <div class="credential-item">
-                        <span class="credential-label">Usuário:</span>
-                        <span>parceiro</span>
-                    </div>
-                    <div class="credential-item">
-                        <span class="credential-label">Senha:</span>
-                        <span>123456</span>
-                    </div>
-                </div>
-            </div>
+
             
             <div class="system-info">
                 <p>Versão 2.1.0 - © 2025 APONTTPAY</p>
@@ -1950,20 +1926,7 @@
                 <button type="submit" class="login-btn">Entrar no Portal</button>
             </form>
 
-            <div class="credentials-info">
-                <h3><i class="fas fa-info-circle"></i> Credenciais de Teste</h3>
-                <div>
-                    <strong>Parceiro 1:</strong>
-                    <div class="credential-item">
-                        <span class="credential-label">Usuário:</span>
-                        <span>partner1</span>
-                    </div>
-                    <div class="credential-item">
-                        <span class="credential-label">Senha:</span>
-                        <span>tech123</span>
-                    </div>
-                </div>
-            </div>
+
             
             <div class="system-info">
                 <p><a href="#" onclick="backToMainLogin()" style="color: white;">← Voltar ao Login Principal</a></p>
@@ -1995,20 +1958,7 @@
                 <button type="submit" class="login-btn">Entrar no Portal</button>
             </form>
 
-            <div class="credentials-info">
-                <h3><i class="fas fa-info-circle"></i> Credenciais de Teste</h3>
-                <div>
-                    <strong>Revendedor 1:</strong>
-                    <div class="credential-item">
-                        <span class="credential-label">Usuário:</span>
-                        <span>reseller1</span>
-                    </div>
-                    <div class="credential-item">
-                        <span class="credential-label">Senha:</span>
-                        <span>joao123</span>
-                    </div>
-                </div>
-            </div>
+
             
             <div class="system-info">
                 <p><a href="#" onclick="backToMainLogin()" style="color: white;">← Voltar ao Login Principal</a></p>
@@ -2840,8 +2790,12 @@
     </style>
 
     <script>
-        // Dados do sistema
-        const systemData = {
+        // Sistema de Persistência Local
+        const STORAGE_KEY = 'aponttpay_system_data';
+        const SESSION_KEY = 'aponttpay_session';
+        
+        // Dados padrão do sistema
+        const defaultSystemData = {
             users: [
                 { username: 'admin', password: 'apontt2025!', name: 'Administrador', type: 'admin' },
                 { username: 'parceiro', password: '123456', name: 'Parceiro', type: 'partner' }
@@ -2920,6 +2874,70 @@
             }
         };
         
+        // Carregar dados do localStorage ou usar dados padrão
+        function loadSystemData() {
+            try {
+                const savedData = localStorage.getItem(STORAGE_KEY);
+                if (savedData) {
+                    return JSON.parse(savedData);
+                }
+            } catch (error) {
+                console.warn('Erro ao carregar dados salvos:', error);
+            }
+            return JSON.parse(JSON.stringify(defaultSystemData));
+        }
+        
+        // Salvar dados no localStorage
+        function saveSystemData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(systemData));
+                localStorage.setItem(STORAGE_KEY + '_backup', JSON.stringify(systemData));
+            } catch (error) {
+                console.error('Erro ao salvar dados:', error);
+                showNotification('warning', 'Aviso', 'Não foi possível salvar os dados automaticamente');
+            }
+        }
+        
+        // Carregar sessão do usuário
+        function loadUserSession() {
+            try {
+                const session = localStorage.getItem(SESSION_KEY);
+                if (session) {
+                    return JSON.parse(session);
+                }
+            } catch (error) {
+                console.warn('Erro ao carregar sessão:', error);
+            }
+            return null;
+        }
+        
+        // Salvar sessão do usuário
+        function saveUserSession(user, userType = 'admin', additionalData = {}) {
+            try {
+                const sessionData = {
+                    user: user,
+                    userType: userType,
+                    loginTime: new Date().toISOString(),
+                    ...additionalData
+                };
+                localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+            } catch (error) {
+                console.error('Erro ao salvar sessão:', error);
+            }
+        }
+        
+        // Limpar sessão
+        function clearUserSession() {
+            try {
+                localStorage.removeItem(SESSION_KEY);
+            } catch (error) {
+                console.error('Erro ao limpar sessão:', error);
+            }
+        }
+        
+        // Inicializar dados do sistema
+        let systemData = loadSystemData();
+        
         let currentPartnerId = null;
         let currentResellerId = null;
 
@@ -2982,17 +3000,62 @@
             }
         }
 
+        // Verificar sessão ativa ao carregar a página
+        function checkActiveSession() {
+            const session = loadUserSession();
+            if (session) {
+                const { user, userType, loginTime } = session;
+                
+                // Verificar se a sessão não expirou (24 horas)
+                const sessionAge = new Date() - new Date(loginTime);
+                const maxAge = 24 * 60 * 60 * 1000; // 24 horas
+                
+                if (sessionAge < maxAge) {
+                    // Restaurar sessão
+                    if (userType === 'admin') {
+                        document.body.classList.remove('login-mode');
+                        loginScreen.style.display = 'none';
+                        appContainer.style.display = 'flex';
+                        initializeSystem();
+                        showNotification('info', 'Sessão Restaurada', `Bem-vindo de volta, ${user.name}!`);
+                        return true;
+                    } else if (userType === 'partner') {
+                        document.body.classList.remove('login-mode');
+                        openPartnerPortal(session.partnerId);
+                        showNotification('info', 'Sessão Restaurada', `Bem-vindo de volta, ${user.company}!`);
+                        return true;
+                    } else if (userType === 'reseller') {
+                        document.body.classList.remove('login-mode');
+                        openResellerPortal(session.resellerId);
+                        showNotification('info', 'Sessão Restaurada', `Bem-vindo de volta, ${user.name}!`);
+                        return true;
+                    }
+                } else {
+                    // Sessão expirada
+                    clearUserSession();
+                    showNotification('warning', 'Sessão Expirada', 'Faça login novamente');
+                }
+            }
+            return false;
+        }
+        
         // Login
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
             
             // Verificar credenciais
             const user = systemData.users.find(u => u.username === username && u.password === password);
             
             if (user) {
+                // Salvar sessão se "Lembrar-me" estiver marcado
+                if (remember) {
+                    saveUserSession(user, 'admin');
+                }
+                
                 document.body.classList.remove('login-mode');
                 loginScreen.style.display = 'none';
                 appContainer.style.display = 'flex';
@@ -3014,6 +3077,9 @@
             const partner = systemData.partners.find(p => p.username === username && p.password === password);
             
             if (partner) {
+                // Salvar sessão do parceiro
+                saveUserSession(partner, 'partner', { partnerId: partner.id });
+                
                 document.getElementById('partner-login-screen').style.display = 'none';
                 document.body.classList.remove('login-mode');
                 openPartnerPortal(partner.id);
@@ -3168,6 +3234,9 @@
                 const row = document.createElement('tr');
                 row.innerHTML = '<td><input type="checkbox" class="client-checkbox" onchange="updateBulkButtons()"></td><td>' + name + '</td><td>' + document + '</td><td>' + email + '</td><td>' + phone + '</td><td><span class="status status-active">Ativo</span></td><td><span class="status status-pending">Em Processo</span></td><td><div class="action-buttons"><button class="btn btn-primary btn-sm" onclick="editClient(this)"><i class="fas fa-edit"></i></button><button class="btn btn-primary btn-sm" onclick="viewClient(this)"><i class="fas fa-eye"></i></button><button class="btn btn-primary btn-sm" onclick="toggleProcessStatus(this)"><i class="fas fa-check"></i></button><button class="btn btn-primary btn-sm" onclick="deleteClient(this)"><i class="fas fa-trash"></i></button></div></td>';
                 tbody.appendChild(row);
+                
+                // Salvar dados automaticamente
+                saveSystemData();
             }
         }
 
@@ -3185,6 +3254,9 @@
                 statusCell.className = 'status status-pending';
                 showNotification('info', 'Status Atualizado', 'Cliente voltou para em processo');
             }
+            
+            // Salvar alteração
+            saveSystemData();
         }
 
         // Excluir cliente
@@ -3199,6 +3271,8 @@
                 setTimeout(() => {
                     row.remove();
                     showNotification('success', 'Excluído', 'Cliente "' + clientName + '" removido com sucesso');
+                    // Salvar alteração
+                    saveSystemData();
                 }, 300);
             }
         }
@@ -3261,6 +3335,8 @@
                         if (count === checkboxes.length) {
                             showNotification('success', 'Excluído', count + ' cliente(s) removido(s) com sucesso');
                             updateBulkButtons();
+                            // Salvar alterações
+                            saveSystemData();
                         }
                     }, 300);
                 });
@@ -3292,6 +3368,8 @@
             
             if (count > 0) {
                 showNotification('success', 'Atualizado', count + ' cliente(s) regularizado(s) com sucesso');
+                // Salvar alterações
+                saveSystemData();
             } else {
                 showNotification('info', 'Info', 'Nenhum cliente precisava ser regularizado');
             }
@@ -3326,16 +3404,46 @@
             modal.classList.remove('active');
         });
         
-        // Verificar acesso via URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const partnerId = urlParams.get('partner');
-        const resellerId = urlParams.get('reseller');
-        
-        if (partnerId) {
-            setTimeout(() => showPartnerLogin(), 1000);
-        } else if (resellerId) {
-            setTimeout(() => showResellerLogin(), 1000);
+        // Inicializar sistema
+        function initializeSystem() {
+            setupAddButtons();
+            setupNotificationListeners();
+            setupSearchListener();
+            loadAdminData();
         }
+        
+        // Inicializar aplicação
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar sessão ativa primeiro
+            if (!checkActiveSession()) {
+                // Se não há sessão ativa, mostrar tela de login
+                document.body.classList.add('login-mode');
+                
+                // Verificar acesso via URL apenas se não há sessão
+                const urlParams = new URLSearchParams(window.location.search);
+                const partnerId = urlParams.get('partner');
+                const resellerId = urlParams.get('reseller');
+                
+                if (partnerId) {
+                    setTimeout(() => showPartnerLogin(), 1000);
+                } else if (resellerId) {
+                    setTimeout(() => showResellerLogin(), 1000);
+                }
+            }
+            
+            // Salvar dados automaticamente a cada 30 segundos
+            setInterval(saveSystemData, 30000);
+            
+            // Salvar dados antes de fechar a página
+            window.addEventListener('beforeunload', function() {
+                saveSystemData();
+            });
+            
+            // Salvar dados quando a página perde o foco
+            window.addEventListener('blur', function() {
+                saveSystemData();
+            });
+        });
         
         // Funções de Login
         function showPartnerLogin() {
@@ -3377,6 +3485,9 @@
             }
             
             if (resellerFound) {
+                // Salvar sessão do revendedor
+                saveUserSession(resellerFound, 'reseller', { resellerId: resellerFound.id });
+                
                 document.getElementById('reseller-login-screen').style.display = 'none';
                 document.body.classList.remove('login-mode');
                 openResellerPortal(resellerFound.id);
@@ -3402,11 +3513,29 @@
                 const document = document.getElementById('document').value;
                 
                 if (name && email) {
+                    // Adicionar cliente aos dados do sistema
+                    const newClient = {
+                        id: 'CLI' + Date.now(),
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        document: document,
+                        status: 'Ativo',
+                        process: 'Em Processo',
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    systemData.clients.push(newClient);
+                    saveSystemData();
+                    
                     showNotification('success', 'Salvo', `Cliente ${name} adicionado com sucesso`);
                     modal.classList.remove('active');
                     
                     // Limpar formulário
                     document.querySelectorAll('.form-control').forEach(field => field.value = '');
+                    
+                    // Atualizar tabela se estiver na seção de clientes
+                    addClientRow(name, email, phone, document);
                 } else {
                     showNotification('error', 'Erro', 'Preencha pelo menos nome e email');
                 }
@@ -3481,6 +3610,9 @@
             logoutBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 if (confirm('Tem certeza que deseja sair do sistema?')) {
+                    // Limpar sessão
+                    clearUserSession();
+                    
                     document.body.classList.add('login-mode');
                     appContainer.style.display = 'none';
                     loginScreen.style.display = 'flex';
@@ -3488,6 +3620,7 @@
                     // Limpar campos de login
                     document.getElementById('username').value = '';
                     document.getElementById('password').value = '';
+                    document.getElementById('remember').checked = false;
                     
                     showNotification('info', 'Logout', 'Sessão encerrada com sucesso');
                 }
@@ -3768,6 +3901,9 @@
                 
                 systemData.partnerClients[currentPartnerId].push(newClient);
                 
+                // Salvar dados automaticamente
+                saveSystemData();
+                
                 // Recarregar dados
                 loadPartnerData(currentPartnerId);
                 
@@ -3836,6 +3972,9 @@
                 statusCell.className = 'status status-pending';
                 showNotification('info', 'Atualizado', 'Cliente voltou para em processo');
             }
+            
+            // Salvar alteração
+            saveSystemData();
         }
         
         function deletePartnerClient(btn) {
@@ -3843,6 +3982,12 @@
             const clientName = row.cells[1].textContent;
             
             if (confirm(`Excluir cliente "${clientName}"?`)) {
+                // Remover dos dados do sistema
+                if (currentPartnerId && systemData.partnerClients[currentPartnerId]) {
+                    systemData.partnerClients[currentPartnerId] = systemData.partnerClients[currentPartnerId].filter(client => client.name !== clientName);
+                    saveSystemData();
+                }
+                
                 row.style.transition = 'all 0.3s ease';
                 row.style.opacity = '0';
                 row.style.transform = 'translateX(-100%)';
@@ -4009,6 +4154,9 @@
         }
         
         function exitResellerPortal() {
+            // Limpar sessão
+            clearUserSession();
+            
             document.getElementById('reseller-portal').style.display = 'none';
             document.getElementById('reseller-login-screen').style.display = 'flex';
             document.body.classList.add('login-mode');
@@ -4046,6 +4194,10 @@
                 };
                 
                 systemData.resellerClients[currentResellerId].push(newClient);
+                
+                // Salvar dados automaticamente
+                saveSystemData();
+                
                 loadResellerData(currentResellerId);
                 
                 closeResellerClientModal();
@@ -4072,6 +4224,12 @@
             const clientName = row.cells[0].textContent;
             
             if (confirm(`Excluir cliente "${clientName}"?`)) {
+                // Remover dos dados do sistema
+                if (currentResellerId && systemData.resellerClients[currentResellerId]) {
+                    systemData.resellerClients[currentResellerId] = systemData.resellerClients[currentResellerId].filter(client => client.name !== clientName);
+                    saveSystemData();
+                }
+                
                 row.style.transition = 'all 0.3s ease';
                 row.style.opacity = '0';
                 row.style.transform = 'translateX(-100%)';
@@ -4133,7 +4291,24 @@
                 return;
             }
             
-            // Simular salvamento
+            // Atualizar dados do parceiro
+            if (currentPartnerId) {
+                const partner = systemData.partners.find(p => p.id === currentPartnerId);
+                if (partner) {
+                    partner.company = company;
+                    partner.email = email;
+                    partner.phone = phone;
+                    partner.responsible = responsible;
+                    partner.updatedAt = new Date().toISOString().split('T')[0];
+                    
+                    if (newPassword) {
+                        partner.password = newPassword;
+                    }
+                    
+                    saveSystemData();
+                }
+            }
+            
             setTimeout(() => {
                 showNotification('success', 'Salvo', 'Perfil atualizado com sucesso');
                 
@@ -4157,6 +4332,9 @@
         }
         
         function exitPartnerPortal() {
+            // Limpar sessão
+            clearUserSession();
+            
             document.getElementById('partner-portal').style.display = 'none';
             document.getElementById('partner-login-screen').style.display = 'flex';
             document.body.classList.add('login-mode');
@@ -4201,6 +4379,9 @@
                 };
                 
                 systemData.partnerResellers[currentPartnerId].push(newReseller);
+                
+                // Salvar dados automaticamente
+                saveSystemData();
                 
                 // Recarregar dados
                 loadPartnerResellers(currentPartnerId);
