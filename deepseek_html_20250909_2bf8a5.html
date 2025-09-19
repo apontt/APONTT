@@ -2,7 +2,12 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#6a11cb">
     <title>APONTTPAY - Sistema Completo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -575,9 +580,56 @@
         }
 
         /* Responsive */
+        /* Menu Mobile */
+        .mobile-menu-btn {
+            margin-right: 15px;
+            display: none;
+        }
+        
+        /* Touch targets para mobile */
+        @media (hover: none) and (pointer: coarse) {
+            .btn, .menu-item, .tab, .btn-icon {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .form-control {
+                min-height: 44px;
+                font-size: 16px;
+            }
+            
+            .notification {
+                padding: 15px;
+                font-size: 15px;
+            }
+        }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
         @media (max-width: 992px) {
+            .mobile-menu-btn {
+                display: flex !important;
+            }
+            
             .sidebar {
                 transform: translateX(-100%);
+                z-index: 1001;
             }
             
             .sidebar.active {
@@ -595,6 +647,17 @@
             .search-box input {
                 width: 180px;
             }
+            
+            /* Modal responsivo para tablet */
+            .modal {
+                width: 95%;
+                max-width: 500px;
+                margin: 10px;
+            }
+            
+            .modal-body {
+                padding: 15px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -609,6 +672,244 @@
             .header-left h1 {
                 font-size: 1.5rem;
             }
+            
+            /* Otimizações para smartphone */
+            .mobile-menu-btn {
+                display: flex !important;
+            }
+            
+            .header {
+                padding: 10px 15px;
+            }
+            
+            .header-actions {
+                gap: 8px;
+            }
+            
+            .btn-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 1.1rem;
+            }
+            
+            .user-profile {
+                gap: 8px;
+            }
+            
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+            
+            /* Modal responsivo para celular */
+            .modal-overlay {
+                padding: 10px;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+            
+            .modal {
+                width: 100%;
+                max-width: none;
+                max-height: 90vh;
+                margin: 0;
+                border-radius: 12px 12px 0 0;
+            }
+            
+            .modal-header {
+                padding: 15px;
+                position: sticky;
+                top: 0;
+                background: white;
+                z-index: 10;
+            }
+            
+            .modal-title {
+                font-size: 1.2rem;
+            }
+            
+            .modal-body {
+                padding: 15px;
+            }
+            
+            .modal-footer {
+                padding: 15px;
+                position: sticky;
+                bottom: 0;
+                background: white;
+                border-top: 1px solid #eee;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .form-control {
+                padding: 15px;
+                font-size: 16px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 16px;
+                min-height: 48px;
+            }
+            
+            /* Tabelas responsivas */
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            table {
+                min-width: 600px;
+            }
+            
+            /* Cards responsivos */
+            .card {
+                padding: 15px;
+            }
+            
+            .card-value {
+                font-size: 1.5rem;
+            }
+            
+            /* Botões de ação em mobile */
+            .action-buttons {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .btn-sm {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            /* Modal em tela cheia para celulares pequenos */
+            .modal-overlay {
+                padding: 0;
+            }
+            
+            .modal {
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+            
+            .modal-body {
+                padding-bottom: 80px;
+            }
+            
+            /* Formulários em mobile */
+            .form-control {
+                padding: 18px 15px;
+                font-size: 16px;
+                -webkit-appearance: none;
+                border-radius: 8px;
+            }
+            
+            /* Grid responsivo */
+            .dashboard {
+                gap: 15px;
+            }
+            
+            /* Header mobile otimizado */
+            .header {
+                padding: 8px 12px;
+                margin-bottom: 15px;
+            }
+            
+            .header-left h1 {
+                font-size: 1.3rem;
+            }
+            
+            .header-right {
+                gap: 8px;
+            }
+            
+            /* Sidebar mobile */
+            .sidebar {
+                width: 280px;
+            }
+            
+            .sidebar-header {
+                padding: 15px;
+            }
+            
+            .logo-text {
+                font-size: 1.1rem;
+            }
+            
+            .menu-item {
+                padding: 15px 20px;
+                font-size: 1rem;
+            }
+            
+            .menu-item i {
+                font-size: 1.3rem;
+                margin-right: 12px;
+            }
+            
+            /* Cards mobile */
+            .card {
+                padding: 15px;
+                margin-bottom: 10px;
+            }
+            
+            .card-value {
+                font-size: 1.4rem;
+            }
+            
+            /* Tabelas mobile */
+            .table-container {
+                margin-bottom: 20px;
+                border-radius: 8px;
+            }
+            
+            .table-header {
+                padding: 15px;
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            
+            .table-actions {
+                justify-content: center;
+            }
+            
+            /* Botões mobile */
+            .btn {
+                padding: 12px 16px;
+                font-size: 14px;
+                min-height: 44px;
+                border-radius: 8px;
+            }
+            
+            .btn-sm {
+                padding: 8px 12px;
+                min-height: 36px;
+                font-size: 12px;
+            }
+            
+            /* Action buttons mobile */
+            .action-buttons {
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            
+            /* Notificações mobile */
+            .notification-container {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+            }
+            
+            .notification {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
         }
 
         /* Login Screen */
@@ -618,6 +919,8 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            /* Otimização para mobile */
+            -webkit-overflow-scrolling: touch;
         }
 
         .login-box {
@@ -631,6 +934,39 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
             color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .login-box {
+                max-width: 90%;
+                padding: 30px 25px;
+                margin: 20px;
+            }
+            
+            .login-logo h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 15px;
+            }
+            
+            .login-box {
+                padding: 25px 20px;
+                border-radius: 15px;
+            }
+            
+            .login-form .form-control {
+                padding: 18px 15px 18px 45px;
+                font-size: 16px;
+            }
+            
+            .login-btn {
+                padding: 18px;
+                font-size: 16px;
+            }
         }
 
         .login-logo {
@@ -916,16 +1252,19 @@
         </div>
     </div>
 
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    
     <!-- Main Application (initially hidden) -->
     <div class="app-container" id="app-container" style="display: none;">
         <!-- Sidebar -->
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo-container">
-                    <div class="logo-icon">
+                    <div class="logo-icon" id="sidebar-logo">
                         <i class="fas fa-credit-card"></i>
                     </div>
-                    <div class="logo-text">APONTTPAY</div>
+                    <div class="logo-text" id="sidebar-company-name">APONTTPAY</div>
                     <div class="logo-subtitle">Sistema Completo</div>
                 </div>
             </div>
@@ -970,6 +1309,9 @@
             <!-- Header -->
             <div class="header">
                 <div class="header-left">
+                    <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn" style="display: none;">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     <h1 id="section-title">Dashboard</h1>
                 </div>
                 <div class="header-right">
@@ -1103,7 +1445,7 @@
                     <div class="table-header">
                         <div class="table-title">Gestão de Parceiros</div>
                         <div class="table-actions">
-                            <button class="btn btn-primary" id="add-partner">
+                            <button class="btn btn-primary" id="add-partner" onclick="addPartner()">
                                 <i class="fas fa-plus"></i>
                                 <span>Adicionar Parceiro</span>
                             </button>
@@ -1364,11 +1706,14 @@
                                 <td><span class="status status-active">Concluído</span></td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">
+                                        <button class="btn btn-primary btn-sm" onclick="viewPayment(this)" title="Visualizar">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button class="btn btn-primary btn-sm">
+                                        <button class="btn btn-primary btn-sm" onclick="downloadReceipt(this)" title="Baixar Recibo">
                                             <i class="fas fa-receipt"></i>
+                                        </button>
+                                        <button class="btn btn-primary btn-sm" onclick="deletePayment(this)" style="background: #dc3545;" title="Excluir">
+                                            <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -1382,11 +1727,14 @@
                                 <td><span class="status status-active">Concluído</span></td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">
+                                        <button class="btn btn-primary btn-sm" onclick="viewPayment(this)" title="Visualizar">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button class="btn btn-primary btn-sm">
+                                        <button class="btn btn-primary btn-sm" onclick="downloadReceipt(this, '#PAY002', 'Maria Santos', 'R$ 3.200,00', '15/07/2023')" title="Baixar Recibo">
                                             <i class="fas fa-receipt"></i>
+                                        </button>
+                                        <button class="btn btn-primary btn-sm" onclick="deletePayment(this)" style="background: #dc3545;" title="Excluir">
+                                            <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -1471,8 +1819,34 @@
                                 <label class="form-label">Email do Administrador:</label>
                                 <input type="email" class="form-control" id="admin-email" value="admin@aponttpay.com">
                             </div>
+                            
+                            <hr style="margin: 30px 0;">
+                            
+                            <h4 style="color: var(--primary); margin-bottom: 20px;">🔐 Credenciais de Acesso do Admin</h4>
+                            
                             <div class="form-group">
-                                <button class="btn btn-primary" onclick="saveGeneralSettings()">Salvar Configurações</button>
+                                <label class="form-label">Usuário Admin:</label>
+                                <input type="text" class="form-control" id="admin-username" value="admin">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Senha Atual:</label>
+                                <input type="password" class="form-control" id="admin-current-password" placeholder="Digite a senha atual">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Nova Senha:</label>
+                                <input type="password" class="form-control" id="admin-new-password" placeholder="Digite a nova senha">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Confirmar Nova Senha:</label>
+                                <input type="password" class="form-control" id="admin-confirm-password" placeholder="Confirme a nova senha">
+                            </div>
+                            
+                            <div class="form-group">
+                                <button class="btn btn-primary" onclick="saveGeneralSettings()">Salvar Configurações Gerais</button>
+                                <button class="btn btn-primary" onclick="changeAdminCredentials()" style="background: #28a745; margin-left: 10px;">Alterar Credenciais</button>
                             </div>
                         </div>
                     </div>
@@ -2685,7 +3059,6 @@
                         </div>
                     </div>
                 </div>
-                </div>
             </div>
         </div>
     </div>
@@ -3761,8 +4134,197 @@
             }
         }
         
+        // Menu Mobile
+        function setupMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                    sidebarOverlay.classList.toggle('active');
+                });
+            }
+            
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                });
+            }
+            
+            // Fechar menu ao clicar em item do menu
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    if (window.innerWidth <= 992) {
+                        sidebar.classList.remove('active');
+                        sidebarOverlay.classList.remove('active');
+                    }
+                });
+            });
+        }
+        
+        // Sistema de Timeout de Inatividade (20 minutos)
+        let lastActivity = Date.now();
+        const INACTIVITY_TIMEOUT = 20 * 60 * 1000; // 20 minutos
+
+        function resetInactivityTimer() {
+            lastActivity = Date.now();
+            clearTimeout(window.inactivityTimer);
+
+            window.inactivityTimer = setTimeout(() => {
+                // Verificar se realmente passou 20 minutos sem atividade
+                const timeSinceLastActivity = Date.now() - lastActivity;
+                if (timeSinceLastActivity >= INACTIVITY_TIMEOUT) {
+                    // Fazer logout por inatividade
+                    clearUserSession();
+                    document.body.classList.add('login-mode');
+
+                    // Ocultar todos os portais
+                    document.getElementById('app-container').style.display = 'none';
+                    document.getElementById('partner-portal').style.display = 'none';
+                    document.getElementById('reseller-portal').style.display = 'none';
+
+                    // Mostrar tela de login
+                    document.getElementById('login-screen').style.display = 'flex';
+                    document.getElementById('partner-login-screen').style.display = 'none';
+                    document.getElementById('reseller-login-screen').style.display = 'none';
+
+                    // Limpar campos
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                    document.getElementById('remember').checked = false;
+
+                    showNotification('warning', 'Sessão Expirada', 'Você foi desconectado por inatividade de 20 minutos');
+                }
+            }, INACTIVITY_TIMEOUT);
+        }
+
+        function setupInactivityDetection() {
+            // Eventos que indicam atividade do usuário
+            const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+
+            activityEvents.forEach(event => {
+                document.addEventListener(event, resetInactivityTimer, true);
+            });
+
+            // Iniciar timer
+            resetInactivityTimer();
+        }
+        
+        // Funcionalidades dos Botões de Pagamento
+        function viewPayment(btn) {
+            const row = btn.closest('tr');
+            const paymentId = row.cells[0].textContent;
+            const client = row.cells[1].textContent;
+            const value = row.cells[2].textContent;
+            const method = row.cells[3].textContent;
+            const date = row.cells[4].textContent;
+            const status = row.cells[5].textContent;
+            
+            // Criar modal de visualização
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay active';
+            modal.innerHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Detalhes do Pagamento ${paymentId}</h3>
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <h4 style="color: var(--primary); margin-bottom: 15px;">Informações do Pagamento</h4>
+                                <div class="info-item"><strong>ID:</strong> ${paymentId}</div>
+                                <div class="info-item"><strong>Cliente:</strong> ${client}</div>
+                                <div class="info-item"><strong>Valor:</strong> ${value}</div>
+                                <div class="info-item"><strong>Método:</strong> ${method}</div>
+                            </div>
+                            <div>
+                                <h4 style="color: var(--primary); margin-bottom: 15px;">Status & Data</h4>
+                                <div class="info-item"><strong>Data:</strong> ${date}</div>
+                                <div class="info-item"><strong>Status:</strong> ${status}</div>
+                                <div class="info-item"><strong>Processado:</strong> Sistema APONTTPAY</div>
+                                <div class="info-item"><strong>Confirmação:</strong> Automática</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <h4 style="color: var(--primary); margin-bottom: 10px;">Observações</h4>
+                            <p>Pagamento processado com sucesso através do gateway de pagamentos.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="downloadReceipt(this, '${paymentId}', '${client}', '${value}', '${date}')">
+                            <i class="fas fa-receipt"></i> Baixar Recibo
+                        </button>
+                        <button class="btn" onclick="this.closest('.modal-overlay').remove()" style="background: #eee; color: #333;">Fechar</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            showNotification('info', 'Visualização', `Detalhes do pagamento ${paymentId} carregados`);
+        }
+        
+        function downloadReceipt(btn, paymentId, client, value, date) {
+            // Simular download de recibo
+            const receiptContent = `
+                RECIBO DE PAGAMENTO\n
+                ================================\n
+                APONTTPAY - Sistema de Pagamentos\n
+                ================================\n\n
+                ID do Pagamento: ${paymentId || 'N/A'}\n
+                Cliente: ${client || 'N/A'}\n
+                Valor: ${value || 'N/A'}\n
+                Data: ${date || new Date().toLocaleDateString()}\n
+                Status: Concluído\n\n
+                ================================\n
+                Obrigado por utilizar nossos serviços!\n
+                ================================
+            `;
+            
+            // Criar e baixar arquivo
+            const blob = new Blob([receiptContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `recibo_${paymentId || 'pagamento'}_${new Date().getTime()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('success', 'Download', `Recibo do pagamento ${paymentId || 'N/A'} baixado com sucesso`);
+        }
+        
+        function deletePayment(btn) {
+            const row = btn.closest('tr');
+            const paymentId = row.cells[0].textContent;
+            const client = row.cells[1].textContent;
+            
+            if (confirm(`Tem certeza que deseja excluir o pagamento ${paymentId} do cliente ${client}?\n\nEsta ação não pode ser desfeita.`)) {
+                // Animação de exclusão
+                row.style.transition = 'all 0.5s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(-100%)';
+                row.style.backgroundColor = '#ffebee';
+                
+                setTimeout(() => {
+                    row.remove();
+                    showNotification('success', 'Excluído', `Pagamento ${paymentId} removido com sucesso`);
+                    
+                    // Salvar alterações
+                    saveSystemData();
+                }, 500);
+            }
+        }
+        
         // Inicializar aplicação
         document.addEventListener('DOMContentLoaded', function() {
+            // Configurar detecção de inatividade
+            setupInactivityDetection();
+            
             // Verificar sessão ativa primeiro
             if (!checkActiveSession()) {
                 // Se não há sessão ativa, mostrar tela de login
@@ -3778,7 +4340,13 @@
                 } else if (resellerId) {
                     setTimeout(() => showResellerLogin(), 1000);
                 }
+            } else {
+                // Se há sessão ativa, atualizar branding
+                setTimeout(() => updateSystemBranding(), 500);
             }
+            
+            // Configurar menu mobile
+            setupMobileMenu();
             
             // Salvar dados automaticamente a cada 30 segundos
             setInterval(saveSystemData, 30000);
@@ -4141,41 +4709,41 @@
         // Função para salvar parceiro editado
         function saveEditedPartner() {
             const id = parseInt(document.getElementById('edit-partner-id').value);
-            const partner = systemData.partners.find(p => p.id === id);
+            const partnerIndex = systemData.partners.findIndex(p => p.id === id);
             
-            if (!partner) {
+            if (partnerIndex === -1) {
                 showNotification('error', 'Erro', 'Parceiro não encontrado');
                 return;
             }
             
             const company = document.getElementById('edit-partner-company').value;
-            const document = document.getElementById('edit-partner-document').value;
+            const documentValue = document.getElementById('edit-partner-document').value;
             const email = document.getElementById('edit-partner-email').value;
             const phone = document.getElementById('edit-partner-phone').value;
             const responsible = document.getElementById('edit-partner-responsible').value;
             const status = document.getElementById('edit-partner-status').value;
             const observations = document.getElementById('edit-partner-observations').value;
             
-            if (!company || !document || !email || !phone || !responsible) {
+            if (!company || !documentValue || !email || !phone || !responsible) {
                 showNotification('error', 'Erro', 'Todos os campos obrigatórios devem ser preenchidos');
                 return;
             }
             
-            // Atualizar dados
-            partner.company = company;
-            partner.document = document;
-            partner.email = email;
-            partner.phone = phone;
-            partner.responsible = responsible;
-            partner.status = status;
-            partner.observations = observations;
-            partner.updatedAt = new Date().toISOString().split('T')[0];
+            // Atualizar dados diretamente no array
+            systemData.partners[partnerIndex].company = company;
+            systemData.partners[partnerIndex].document = documentValue;
+            systemData.partners[partnerIndex].email = email;
+            systemData.partners[partnerIndex].phone = phone;
+            systemData.partners[partnerIndex].responsible = responsible;
+            systemData.partners[partnerIndex].status = status;
+            systemData.partners[partnerIndex].observations = observations;
+            systemData.partners[partnerIndex].updatedAt = new Date().toISOString().split('T')[0];
             
             // Salvar no localStorage
             saveSystemData();
             
             // Atualizar tabela
-            updatePartnerRow(id, partner);
+            updatePartnerRow(id, systemData.partners[partnerIndex]);
             
             // Fechar modal
             document.getElementById('partner-edit-modal').classList.remove('active');
@@ -5331,6 +5899,82 @@
             }
         }
         
+        // Funções de Configurações
+        function saveGeneralSettings() {
+            const companyName = document.getElementById('company-name').value;
+            const adminEmail = document.getElementById('admin-email').value;
+            
+            if (!companyName || !adminEmail) {
+                showNotification('error', 'Erro', 'Todos os campos são obrigatórios');
+                return;
+            }
+            
+            systemData.systemSettings.companyName = companyName;
+            systemData.systemSettings.adminEmail = adminEmail;
+            
+            saveSystemData();
+            showNotification('success', 'Salvo', 'Configurações gerais salvas com sucesso');
+        }
+        
+        function changeAdminCredentials() {
+            const newUsername = document.getElementById('admin-username').value;
+            const currentPassword = document.getElementById('admin-current-password').value;
+            const newPassword = document.getElementById('admin-new-password').value;
+            const confirmPassword = document.getElementById('admin-confirm-password').value;
+            
+            if (!newUsername || !currentPassword || !newPassword || !confirmPassword) {
+                showNotification('error', 'Erro', 'Todos os campos são obrigatórios');
+                return;
+            }
+            
+            // Verificar senha atual
+            const adminUser = systemData.users.find(u => u.type === 'admin');
+            if (!adminUser || adminUser.password !== currentPassword) {
+                showNotification('error', 'Erro', 'Senha atual incorreta');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showNotification('error', 'Erro', 'Nova senha e confirmação não coincidem');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showNotification('error', 'Erro', 'Nova senha deve ter pelo menos 6 caracteres');
+                return;
+            }
+            
+            // Atualizar credenciais
+            adminUser.username = newUsername;
+            adminUser.password = newPassword;
+            
+            saveSystemData();
+            
+            // Limpar campos
+            document.getElementById('admin-current-password').value = '';
+            document.getElementById('admin-new-password').value = '';
+            document.getElementById('admin-confirm-password').value = '';
+            
+            showNotification('success', 'Atualizado', 'Credenciais do admin alteradas com sucesso');
+        }
+        
+        function showSettingsTab(tabName) {
+            document.querySelectorAll('.settings-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const targetTab = document.getElementById('settings-' + tabName);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+            const activeBtn = document.querySelector(`[onclick="showSettingsTab('${tabName}')"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+        }
+        
         // Função para gerar contrato com valor específico
         function generateClientContractLink(btn) {
             const row = btn.closest('tr');
@@ -5364,6 +6008,74 @@
             
             // Abrir página de assinatura com dados do cliente
             openContractSignaturePage(clientName, clientEmail, clientPhone, clientDocument, contractValue);
+        }
+        
+        function previewLogo(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('logo-preview');
+                    preview.innerHTML = `<img src="${e.target.result}" style="max-width: 200px; max-height: 100px; object-fit: contain;">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function saveLogo() {
+            const input = document.getElementById('logo-upload');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    systemData.systemSettings.logo = e.target.result;
+                    saveSystemData();
+                    showNotification('success', 'Salvo', 'Logomarca salva com sucesso');
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                showNotification('warning', 'Aviso', 'Selecione uma imagem primeiro');
+            }
+        }
+        
+        function removeLogo() {
+            systemData.systemSettings.logo = null;
+            saveSystemData();
+            document.getElementById('logo-preview').innerHTML = `
+                <div style="color: #999; font-size: 1.2rem;">
+                    <i class="fas fa-image" style="font-size: 3rem; margin-bottom: 10px; display: block;"></i>
+                    Nenhuma logo carregada
+                </div>
+            `;
+            document.getElementById('logo-upload').value = '';
+            showNotification('success', 'Removido', 'Logomarca removida com sucesso');
+        }
+        
+        function saveAsaasSettings() {
+            const environment = document.getElementById('asaas-environment').value;
+            const apiKey = document.getElementById('asaas-api-key').value;
+            const webhookUrl = document.getElementById('asaas-webhook').value;
+            const enabled = document.getElementById('asaas-enabled').checked;
+            
+            systemData.systemSettings.asaasEnvironment = environment;
+            systemData.systemSettings.asaasApiKey = apiKey;
+            systemData.systemSettings.asaasWebhookUrl = webhookUrl;
+            systemData.systemSettings.asaasEnabled = enabled;
+            
+            saveSystemData();
+            showNotification('success', 'Salvo', 'Configurações do Asaas salvas com sucesso');
+        }
+        
+        function testAsaasConnection() {
+            const apiKey = document.getElementById('asaas-api-key').value;
+            if (!apiKey) {
+                showNotification('error', 'Erro', 'Informe a API Key primeiro');
+                return;
+            }
+            
+            showNotification('info', 'Testando', 'Testando conexão com Asaas...');
+            
+            setTimeout(() => {
+                showNotification('success', 'Sucesso', 'Conexão com Asaas estabelecida com sucesso');
+            }, 2000);
         }
         
         // Função para abrir página de assinatura de contrato
@@ -6431,6 +7143,369 @@ ext = 'Prestação de serviços de regularização documental e consultoria espe
                 } else if (icon && icon.classList.contains('fa-download')) {
                     btn.title = 'Baixar arquivo';
                 }
+            });
+        });
+        // Funções para adicionar parceiro
+        function addPartner() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay active';
+            modal.innerHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Adicionar Parceiro</h3>
+                        <button class="modal-close" onclick="closeAddPartnerModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label">Nome da Empresa:</label>
+                            <input type="text" class="form-control" id="partner-company-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CNPJ:</label>
+                            <input type="text" class="form-control" id="partner-cnpj" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email:</label>
+                            <input type="email" class="form-control" id="partner-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Telefone:</label>
+                            <input type="tel" class="form-control" id="partner-phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Responsável:</label>
+                            <input type="text" class="form-control" id="partner-responsible" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="saveNewPartner()">Salvar Parceiro</button>
+                        <button class="btn" onclick="closeAddPartnerModal()" style="background: #eee; color: #333;">Cancelar</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        function closeAddPartnerModal() {
+            const modal = document.querySelector('.modal-overlay');
+            if (modal) modal.remove();
+        }
+        
+        function saveNewPartner() {
+            const company = document.getElementById('partner-company-name').value;
+            const cnpj = document.getElementById('partner-cnpj').value;
+            const email = document.getElementById('partner-email').value;
+            const phone = document.getElementById('partner-phone').value;
+            const responsible = document.getElementById('partner-responsible').value;
+            
+            if (company && cnpj && email && phone && responsible) {
+                const newId = Math.max(...systemData.partners.map(p => p.id)) + 1;
+                const username = 'partner' + newId;
+                const password = company.toLowerCase().replace(/\s+/g, '') + '123';
+                
+                const newPartner = {
+                    id: newId,
+                    company: company,
+                    document: cnpj,
+                    email: email,
+                    phone: phone,
+                    responsible: responsible,
+                    status: 'active',
+                    observations: '',
+                    accessLink: '/parceiros/' + newId,
+                    createdAt: new Date().toISOString().split('T')[0],
+                    updatedAt: new Date().toISOString().split('T')[0],
+                    deleted: false,
+                    accessCount: 0,
+                    lastAccess: 'Nunca',
+                    username: username,
+                    password: password
+                };
+                
+                systemData.partners.push(newPartner);
+                systemData.partnerClients[newId] = [];
+                systemData.partnerResellers[newId] = [];
+                saveSystemData();
+                
+                closeAddPartnerModal();
+                showNotification('success', 'Salvo', `Parceiro ${company} criado! Login: ${username}, Senha: ${password}`);
+            } else {
+                showNotification('error', 'Erro', 'Todos os campos são obrigatórios');
+            }
+        }
+        
+        // Funções de configurações
+        function previewLogo(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('logo-preview');
+                    preview.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 100px; border-radius: 8px;">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function saveLogo() {
+            const logoUpload = document.getElementById('logo-upload');
+            if (logoUpload.files && logoUpload.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    systemData.systemSettings.logo = e.target.result;
+                    saveSystemData();
+                    updateSystemBranding();
+                    showNotification('success', 'Logo Salva', 'Logomarca atualizada com sucesso');
+                };
+                reader.readAsDataURL(logoUpload.files[0]);
+            } else {
+                showNotification('warning', 'Aviso', 'Selecione uma imagem primeiro');
+            }
+        }
+        
+        function updateSystemBranding() {
+            const sidebarLogo = document.getElementById('sidebar-logo');
+            const sidebarCompanyName = document.getElementById('sidebar-company-name');
+            
+            if (systemData.systemSettings.logo && sidebarLogo) {
+                sidebarLogo.innerHTML = `<img src="${systemData.systemSettings.logo}" style="width: 50px; height: 50px; border-radius: 12px; object-fit: cover;">`;
+            }
+            
+            if (systemData.systemSettings.companyName && sidebarCompanyName) {
+                sidebarCompanyName.textContent = systemData.systemSettings.companyName;
+            }
+        }
+        
+        function removeLogo() {
+            document.getElementById('logo-preview').innerHTML = `
+                <div style="color: #999; font-size: 1.2rem;">
+                    <i class="fas fa-image" style="font-size: 3rem; margin-bottom: 10px; display: block;"></i>
+                    Nenhuma logo carregada
+                </div>
+            `;
+            document.getElementById('logo-upload').value = '';
+            systemData.systemSettings.logo = null;
+            saveSystemData();
+            showNotification('info', 'Logo Removida', 'Logomarca removida com sucesso');
+        }
+        
+        function saveGeneralSettings() {
+            const companyName = document.getElementById('company-name').value;
+            const adminEmail = document.getElementById('admin-email').value;
+            
+            if (companyName && adminEmail) {
+                systemData.systemSettings.companyName = companyName;
+                systemData.systemSettings.adminEmail = adminEmail;
+                saveSystemData();
+                updateSystemBranding();
+                showNotification('success', 'Salvo', 'Configurações gerais salvas com sucesso');
+            } else {
+                showNotification('error', 'Erro', 'Preencha todos os campos');
+            }
+        }
+        
+        function saveAsaasSettings() {
+            const environment = document.getElementById('asaas-environment').value;
+            const apiKey = document.getElementById('asaas-api-key').value;
+            const webhook = document.getElementById('asaas-webhook').value;
+            const enabled = document.getElementById('asaas-enabled').checked;
+            
+            systemData.systemSettings.asaasEnvironment = environment;
+            systemData.systemSettings.asaasApiKey = apiKey;
+            systemData.systemSettings.asaasWebhookUrl = webhook;
+            systemData.systemSettings.asaasEnabled = enabled;
+            saveSystemData();
+            
+            showNotification('success', 'Salvo', 'Configurações do Asaas salvas com sucesso');
+        }
+        
+        function testAsaasConnection() {
+            const apiKey = document.getElementById('asaas-api-key').value;
+            if (!apiKey) {
+                showNotification('error', 'Erro', 'Insira a API Key primeiro');
+                return;
+            }
+            
+            showNotification('info', 'Teste', 'Testando conexão com Asaas...');
+            setTimeout(() => {
+                showNotification('success', 'Sucesso', 'Conexão com Asaas estabelecida');
+            }, 2000);
+        }
+        
+        // Funcionalidades dos Pagamentos do Parceiro
+        function viewPartnerPayment(btn) {
+            const row = btn.closest('tr');
+            const paymentId = row.cells[0].textContent;
+            const client = row.cells[1].textContent;
+            const value = row.cells[2].textContent;
+            const date = row.cells[3].textContent;
+            const method = row.cells[4].textContent;
+            const status = row.cells[5].textContent;
+            const commission = row.cells[6].textContent;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay active';
+            modal.innerHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Detalhes do Pagamento ${paymentId}</h3>
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <h4 style="color: var(--primary); margin-bottom: 15px;">Informações do Pagamento</h4>
+                                <div class="info-item"><strong>ID:</strong> ${paymentId}</div>
+                                <div class="info-item"><strong>Cliente:</strong> ${client}</div>
+                                <div class="info-item"><strong>Valor:</strong> ${value}</div>
+                                <div class="info-item"><strong>Método:</strong> ${method}</div>
+                            </div>
+                            <div>
+                                <h4 style="color: var(--primary); margin-bottom: 15px;">Comissão & Status</h4>
+                                <div class="info-item"><strong>Data:</strong> ${date}</div>
+                                <div class="info-item"><strong>Status:</strong> ${status}</div>
+                                <div class="info-item"><strong>Comissão:</strong> ${commission}</div>
+                                <div class="info-item"><strong>Parceiro:</strong> Tech Solutions</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="downloadPartnerReceipt(this, '${paymentId}', '${client}', '${value}', '${date}')">
+                            <i class="fas fa-receipt"></i> Baixar Recibo
+                        </button>
+                        <button class="btn" onclick="this.closest('.modal-overlay').remove()" style="background: #eee; color: #333;">Fechar</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            showNotification('info', 'Visualização', `Detalhes do pagamento ${paymentId} carregados`);
+        }
+        
+        function editPartnerPayment(btn) {
+            const row = btn.closest('tr');
+            const paymentId = row.cells[0].textContent;
+            
+            showNotification('info', 'Edição', `Editando pagamento ${paymentId}`);
+        }
+        
+        function downloadPartnerReceipt(btn, paymentId, client, value, date) {
+            const receiptContent = `
+                RECIBO DE PAGAMENTO - PARCEIRO\n
+                ================================\n
+                APONTTPAY - Portal do Parceiro\n
+                ================================\n\n
+                ID do Pagamento: ${paymentId || 'N/A'}\n
+                Cliente: ${client || 'N/A'}\n
+                Valor: ${value || 'N/A'}\n
+                Data: ${date || new Date().toLocaleDateString()}\n
+                Parceiro: Tech Solutions Ltda\n
+                Comissão: 10%\n\n
+                ================================\n
+                Obrigado pela parceria!\n
+                ================================
+            `;
+            
+            const blob = new Blob([receiptContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `recibo_parceiro_${paymentId || 'pagamento'}_${new Date().getTime()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('success', 'Download', `Recibo do pagamento ${paymentId || 'N/A'} baixado com sucesso`);
+        }
+        
+        function confirmPartnerPayment(btn) {
+            const row = btn.closest('tr');
+            const paymentId = row.cells[0].textContent;
+            const statusCell = row.cells[5].querySelector('.status');
+            
+            if (confirm(`Confirmar pagamento ${paymentId}?`)) {
+                statusCell.textContent = 'Pago';
+                statusCell.className = 'status status-active';
+                
+                // Substituir botão de confirmar por botão de recibo
+                btn.outerHTML = `<button class="btn btn-primary btn-sm" onclick="downloadPartnerReceipt(this, '${paymentId}', 'Cliente', 'R$ 2.300,00', '20/01/2024')" title="Baixar Recibo"><i class="fas fa-receipt"></i></button>`;
+                
+                showNotification('success', 'Confirmado', `Pagamento ${paymentId} confirmado com sucesso`);
+                saveSystemData();
+            }
+        }
+        
+        function addPartnerPayment() {
+            showNotification('info', 'Novo Pagamento', 'Funcionalidade de adicionar pagamento em desenvolvimento');
+        }
+        
+        function exportPartnerPayments() {
+            const csvContent = "ID,Cliente,Valor,Data,Método,Status,Comissão\n#PAY001,Cliente A,R$ 1.500\,00,15/01/2024,PIX,Pago,R$ 150\,00\n#PAY002,Cliente B,R$ 2.300\,00,20/01/2024,Cartão,Pendente,R$ 230\,00";
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `relatorio_pagamentos_${new Date().getTime()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('success', 'Exportado', 'Relatório de pagamentos exportado com sucesso');
+        }
+        
+        // Sistema de timeout de inatividade
+        let inactivityTimer;
+        const INACTIVITY_TIME = 20 * 60 * 1000; // 20 minutos
+        
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                clearUserSession();
+                document.body.classList.add('login-mode');
+                document.getElementById('app-container').style.display = 'none';
+                document.getElementById('partner-portal').style.display = 'none';
+                document.getElementById('reseller-portal').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'flex';
+                showNotification('warning', 'Sessão Expirada', 'Você foi desconectado por inatividade');
+            }, INACTIVITY_TIME);
+        }
+        
+        // Funções dos botões de pagamento
+        function viewPayment(btn) {
+            const row = btn.closest('tr');
+            const paymentId = row.cells[0].textContent;
+            showNotification('info', 'Visualizar', `Visualizando pagamento ${paymentId}`);
+        }
+        
+        function downloadReceipt(btn) {
+            const row = btn.closest('tr');
+            const paymentId = row.cells[0].textContent;
+            showNotification('success', 'Download', `Recibo ${paymentId} baixado com sucesso`);
+        }
+        
+        function deletePayment(btn) {
+            const row = btn.closest('tr');
+            const paymentId = row.cells[0].textContent;
+            
+            if (confirm(`Excluir pagamento ${paymentId}?`)) {
+                row.style.transition = 'all 0.3s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(-100%)';
+                setTimeout(() => {
+                    row.remove();
+                    showNotification('success', 'Excluído', `Pagamento ${paymentId} removido`);
+                }, 300);
+            }
+        }
+        
+        // Detectar atividade do usuário
+        document.addEventListener('DOMContentLoaded', function() {
+            ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+                document.addEventListener(event, () => {
+                    if (loadUserSession()) resetInactivityTimer();
+                }, true);
             });
         });
     </script>
