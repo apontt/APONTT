@@ -1,0 +1,10 @@
+theme: jekyll-theme-minimal
+title: APONTTPAY
+description: Sistema Completo Avançado
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: true
+include:
+  - README.md

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Parceiro - APONTTPAY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --dark: #343a40;
+            --light: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .partner-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .action-card i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .action-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .action-card p {
+            opacity: 0.8;
+        }
+
+        .clients-table {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: rgba(40, 167, 69, 0.3);
+            color: #28a745;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.3);
+            color: #ffc107;
+        }
+
+        .status-finished {
+            background: rgba(40, 167, 69, 0.3);
+            color: #28a745;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-handshake"></i> Portal do Parceiro</h1>
+            <p>Gerencie seus clientes e acompanhe seu desempenho</p>
+        </div>
+
+        <div class="partner-info" id="partner-info">
+            <h2><i class="fas fa-building"></i> Carregando informações do parceiro...</h2>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="stat-value" id="total-clients">0</div>
+                <div class="stat-label">Total de Clientes</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle"></i>
+                <div class="stat-value" id="finished-processes">0</div>
+                <div class="stat-label">Processos Finalizados</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock"></i>
+                <div class="stat-value" id="pending-processes">0</div>
+                <div class="stat-label">Em Andamento</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-percentage"></i>
+                <div class="stat-value" id="success-rate">0%</div>
+                <div class="stat-label">Taxa de Sucesso</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <div class="action-card" onclick="addNewClient()">
+                <i class="fas fa-user-plus"></i>
+                <h3>Adicionar Cliente</h3>
+                <p>Cadastre um novo cliente em sua carteira</p>
+            </div>
+            <div class="action-card" onclick="generateReport()">
+                <i class="fas fa-chart-bar"></i>
+                <h3>Relatórios</h3>
+                <p>Visualize relatórios detalhados de performance</p>
+            </div>
+            <div class="action-card" onclick="contactSupport()">
+                <i class="fas fa-headset"></i>
+                <h3>Suporte</h3>
+                <p>Entre em contato com nossa equipe de suporte</p>
+            </div>
+        </div>
+
+        <div class="clients-table">
+            <div class="table-header">
+                <div class="table-title"><i class="fas fa-list"></i> Seus Clientes</div>
+                <button class="btn btn-primary" onclick="addNewClient()">
+                    <i class="fas fa-plus"></i> Novo Cliente
+                </button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Status</th>
+                        <th>Processo</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody id="clients-table-body">
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-users" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px; display: block;"></i>
+                            Carregando clientes...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 APONTTPAY - Portal do Parceiro | Versão 2.1.0</p>
+        </div>
+    </div>
+
+    <script>
+        // Obter parâmetros da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const partnerId = urlParams.get('partner');
+        const isPortal = urlParams.get('portal');
+
+        // Carregar dados do localStorage (mesmo sistema do admin)
+        const STORAGE_KEY = 'aponttpay_data';
+        
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            return saved ? JSON.parse(saved) : { clients: [], partners: [] };
+        }
+
+        const data = loadData();
+        const partners = data.partners || [];
+        const clients = data.clients || [];
+
+        // Encontrar parceiro atual
+        const currentPartner = partners.find(p => p.id == partnerId);
+
+        if (!currentPartner) {
+            document.getElementById('partner-info').innerHTML = `
+                <h2><i class="fas fa-exclamation-triangle"></i> Parceiro não encontrado</h2>
+                <p>O link pode estar incorreto ou o parceiro foi removido do sistema.</p>
+            `;
+        } else {
+            // Exibir informações do parceiro
+            document.getElementById('partner-info').innerHTML = `
+                <h2><i class="fas fa-building"></i> ${currentPartner.name}</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+                    <div><strong>CNPJ:</strong> ${currentPartner.cnpj}</div>
+                    <div><strong>Email:</strong> ${currentPartner.email}</div>
+                    <div><strong>Responsável:</strong> ${currentPartner.responsible}</div>
+                    <div><strong>Telefone:</strong> ${currentPartner.phone}</div>
+                </div>
+            `;
+
+            // Filtrar clientes do parceiro
+            const partnerClients = clients.filter(c => c.partnerId == partnerId);
+            const finishedProcesses = partnerClients.filter(c => c.process === 'Finalizado').length;
+            const pendingProcesses = partnerClients.length - finishedProcesses;
+            const successRate = partnerClients.length > 0 ? Math.round((finishedProcesses / partnerClients.length) * 100) : 0;
+
+            // Atualizar estatísticas
+            document.getElementById('total-clients').textContent = partnerClients.length;
+            document.getElementById('finished-processes').textContent = finishedProcesses;
+            document.getElementById('pending-processes').textContent = pendingProcesses;
+            document.getElementById('success-rate').textContent = successRate + '%';
+
+            // Atualizar tabela de clientes
+            const tbody = document.getElementById('clients-table-body');
+            if (partnerClients.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-users" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px; display: block;"></i>
+                            Nenhum cliente cadastrado ainda.<br>
+                            <small>Clique em "Novo Cliente" para começar.</small>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = partnerClients.map(client => `
+                    <tr>
+                        <td>${client.name}</td>
+                        <td>${client.email}</td>
+                        <td>${client.phone}</td>
+                        <td><span class="status status-active">${client.status}</span></td>
+                        <td><span class="status status-${client.process === 'Finalizado' ? 'finished' : 'pending'}">${client.process}</span></td>
+                        <td>${client.createdAt}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // Funções do portal
+        function addNewClient() {
+            alert('Funcionalidade de adicionar cliente será implementada em breve!\n\nPor enquanto, entre em contato com o administrador do sistema para adicionar novos clientes.');
+        }
+
+        function generateReport() {
+            if (!currentPartner) {
+                alert('Erro: Parceiro não encontrado.');
+                return;
+            }
+
+            const partnerClients = clients.filter(c => c.partnerId == partnerId);
+            const report = `
+RELATÓRIO DO PARCEIRO
+=====================
+
+Parceiro: ${currentPartner.name}
+CNPJ: ${currentPartner.cnpj}
+Data do Relatório: ${new Date().toLocaleDateString('pt-BR')}
+
+ESTATÍSTICAS:
+- Total de Clientes: ${partnerClients.length}
+- Processos Finalizados: ${partnerClients.filter(c => c.process === 'Finalizado').length}
+- Processos em Andamento: ${partnerClients.filter(c => c.process !== 'Finalizado').length}
+- Taxa de Sucesso: ${partnerClients.length > 0 ? Math.round((partnerClients.filter(c => c.process === 'Finalizado').length / partnerClients.length) * 100) : 0}%
+
+CLIENTES:
+${partnerClients.map(c => `- ${c.name} (${c.email}) - Status: ${c.process}`).join('\n')}
+            `;
+
+            // Criar e baixar arquivo de relatório
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `relatorio_${currentPartner.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            alert('Relatório gerado e baixado com sucesso!');
+        }
+
+        function contactSupport() {
+            const message = `Olá! Sou ${currentPartner ? currentPartner.responsible + ' da ' + currentPartner.name : 'um parceiro'} e preciso de suporte.`;
+            const whatsappUrl = `https://wa.me/5511999999999?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Verificar se é acesso direto sem parâmetros
+        if (!partnerId) {
+            document.body.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 20px;">
+                    <div>
+                        <i class="fas fa-lock" style="font-size: 4rem; margin-bottom: 20px; opacity: 0.5;"></i>
+                        <h1>Acesso Restrito</h1>
+                        <p style="margin: 20px 0;">Este é o portal do parceiro. Você precisa de um link específico para acessar.</p>
+                        <p>Entre em contato com o administrador do sistema para obter seu link de acesso.</p>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
