@@ -247,6 +247,87 @@
             display: flex;
             gap: 10px;
         }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+        }
+
+        .tab-btn.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .client-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .client-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-edit {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-view {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-status {
+            background: var(--success);
+            color: white;
+        }
+
+        .add-client-btn {
+            background: var(--primary);
+            color: white;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -280,10 +361,26 @@
         </div>
         
         <div class="container">
-            <h2>Gestão de Parceiros</h2>
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="switchTab('partners')">Parceiros</button>
+                <button class="tab-btn" onclick="switchTab('clients')">Clientes</button>
+            </div>
             
-            <div class="partners-grid" id="partners-grid">
-                <!-- Parceiros serão carregados aqui -->
+            <!-- Aba Parceiros -->
+            <div id="partners-tab" class="tab-content active">
+                <h2>Gestão de Parceiros</h2>
+                <div class="partners-grid" id="partners-grid">
+                    <!-- Parceiros serão carregados aqui -->
+                </div>
+            </div>
+            
+            <!-- Aba Clientes -->
+            <div id="clients-tab" class="tab-content">
+                <h2>Gestão de Clientes</h2>
+                <button class="btn add-client-btn" onclick="addClient()">+ Adicionar Cliente</button>
+                <div class="clients-grid" id="clients-grid">
+                    <!-- Clientes serão carregados aqui -->
+                </div>
             </div>
         </div>
     </div>
@@ -394,6 +491,56 @@
         </div>
     </div>
 
+    <!-- Modal de Cliente -->
+    <div id="client-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="client-modal-title">Adicionar Cliente</h3>
+            
+            <form id="client-form">
+                <div class="form-group">
+                    <label class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="client-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="client-email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Telefone</label>
+                    <input type="tel" class="form-control" id="client-phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Empresa</label>
+                    <input type="text" class="form-control" id="client-company" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-control" id="client-status" required>
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                        <option value="pendente">Pendente</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="button" class="btn" onclick="closeClientModal()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Visualizar Cliente -->
+    <div id="view-client-modal" class="modal">
+        <div class="modal-content">
+            <h3>Detalhes do Cliente</h3>
+            <div id="client-details"></div>
+            <button class="btn" onclick="closeViewClientModal()">Fechar</button>
+        </div>
+    </div>
+
     <!-- Input oculto para upload de foto -->
     <input type="file" id="photo-input" accept="image/*" style="display: none;">
 
@@ -434,6 +581,26 @@
                     username: 'reseller1',
                     password: 'reseller123',
                     photo: null
+                }
+            ],
+            clients: [
+                {
+                    id: 1,
+                    name: 'Maria Silva',
+                    email: 'maria@empresa.com',
+                    phone: '(11) 96666-6666',
+                    company: 'Empresa ABC Ltda',
+                    status: 'ativo',
+                    createdAt: '2024-01-15'
+                },
+                {
+                    id: 2,
+                    name: 'Pedro Santos',
+                    email: 'pedro@comercio.com',
+                    phone: '(11) 95555-5555',
+                    company: 'Comércio XYZ',
+                    status: 'pendente',
+                    createdAt: '2024-01-20'
                 }
             ]
         };
@@ -496,6 +663,18 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('admin-panel').classList.add('active');
             loadPartners();
+            loadClients();
+        }
+
+        // Alternar abas
+        function switchTab(tabName) {
+            // Remover classe active de todas as abas
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Ativar aba selecionada
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
         }
 
         // Carregar parceiros no admin
@@ -514,6 +693,40 @@
                     <div class="partner-actions">
                         <button class="btn btn-access" onclick="openAccessModal(${partner.id})">
                             <i class="fas fa-external-link-alt"></i> Acessar Portal
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Carregar clientes no admin
+        function loadClients() {
+            const grid = document.getElementById('clients-grid');
+            grid.innerHTML = '';
+            
+            systemData.clients.forEach(client => {
+                const statusColor = client.status === 'ativo' ? 'success' : client.status === 'inativo' ? 'danger' : 'warning';
+                const card = document.createElement('div');
+                card.className = 'client-card';
+                card.innerHTML = `
+                    <h3>${client.name}</h3>
+                    <p><strong>Empresa:</strong> ${client.company}</p>
+                    <p><strong>Email:</strong> ${client.email}</p>
+                    <p><strong>Telefone:</strong> ${client.phone}</p>
+                    <p><strong>Status:</strong> <span style="color: var(--${statusColor}); font-weight: bold;">${client.status.toUpperCase()}</span></p>
+                    <div class="client-actions">
+                        <button class="btn btn-view btn-sm" onclick="viewClient(${client.id})">
+                            <i class="fas fa-eye"></i> Ver
+                        </button>
+                        <button class="btn btn-edit btn-sm" onclick="editClient(${client.id})">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-status btn-sm" onclick="toggleClientStatus(${client.id})">
+                            <i class="fas fa-toggle-on"></i> Status
+                        </button>
+                        <button class="btn btn-delete btn-sm" onclick="deleteClient(${client.id})">
+                            <i class="fas fa-trash"></i> Excluir
                         </button>
                     </div>
                 `;
@@ -737,6 +950,128 @@
                 }, 300);
             }, 3000);
         }
+
+        // Funções de gerenciamento de clientes
+        let editingClientId = null;
+
+        // Adicionar cliente
+        function addClient() {
+            editingClientId = null;
+            document.getElementById('client-modal-title').textContent = 'Adicionar Cliente';
+            document.getElementById('client-form').reset();
+            document.getElementById('client-status').value = 'ativo';
+            document.getElementById('client-modal').classList.add('active');
+        }
+
+        // Editar cliente
+        function editClient(clientId) {
+            const client = systemData.clients.find(c => c.id === clientId);
+            if (client) {
+                editingClientId = clientId;
+                document.getElementById('client-modal-title').textContent = 'Editar Cliente';
+                document.getElementById('client-name').value = client.name;
+                document.getElementById('client-email').value = client.email;
+                document.getElementById('client-phone').value = client.phone;
+                document.getElementById('client-company').value = client.company;
+                document.getElementById('client-status').value = client.status;
+                document.getElementById('client-modal').classList.add('active');
+            }
+        }
+
+        // Visualizar cliente
+        function viewClient(clientId) {
+            const client = systemData.clients.find(c => c.id === clientId);
+            if (client) {
+                const details = document.getElementById('client-details');
+                details.innerHTML = `
+                    <p><strong>Nome:</strong> ${client.name}</p>
+                    <p><strong>Email:</strong> ${client.email}</p>
+                    <p><strong>Telefone:</strong> ${client.phone}</p>
+                    <p><strong>Empresa:</strong> ${client.company}</p>
+                    <p><strong>Status:</strong> ${client.status.toUpperCase()}</p>
+                    <p><strong>Data de Cadastro:</strong> ${client.createdAt}</p>
+                `;
+                document.getElementById('view-client-modal').classList.add('active');
+            }
+        }
+
+        // Alternar status do cliente
+        function toggleClientStatus(clientId) {
+            const client = systemData.clients.find(c => c.id === clientId);
+            if (client) {
+                const newStatus = client.status === 'ativo' ? 'inativo' : 'ativo';
+                client.status = newStatus;
+                saveData();
+                loadClients();
+                showNotification('success', `Status do cliente alterado para ${newStatus.toUpperCase()}!`);
+            }
+        }
+
+        // Excluir cliente
+        function deleteClient(clientId) {
+            if (confirm('Tem certeza que deseja excluir este cliente?')) {
+                const index = systemData.clients.findIndex(c => c.id === clientId);
+                if (index !== -1) {
+                    systemData.clients.splice(index, 1);
+                    saveData();
+                    loadClients();
+                    showNotification('success', 'Cliente excluído com sucesso!');
+                }
+            }
+        }
+
+        // Fechar modal de cliente
+        function closeClientModal() {
+            document.getElementById('client-modal').classList.remove('active');
+            editingClientId = null;
+        }
+
+        // Fechar modal de visualizar cliente
+        function closeViewClientModal() {
+            document.getElementById('view-client-modal').classList.remove('active');
+        }
+
+        // Salvar cliente (adicionar ou editar)
+        document.getElementById('client-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('client-name').value;
+            const email = document.getElementById('client-email').value;
+            const phone = document.getElementById('client-phone').value;
+            const company = document.getElementById('client-company').value;
+            const status = document.getElementById('client-status').value;
+            
+            if (editingClientId) {
+                // Editar cliente existente
+                const client = systemData.clients.find(c => c.id === editingClientId);
+                if (client) {
+                    client.name = name;
+                    client.email = email;
+                    client.phone = phone;
+                    client.company = company;
+                    client.status = status;
+                    showNotification('success', 'Cliente atualizado com sucesso!');
+                }
+            } else {
+                // Adicionar novo cliente
+                const newId = Math.max(...systemData.clients.map(c => c.id), 0) + 1;
+                const newClient = {
+                    id: newId,
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    company: company,
+                    status: status,
+                    createdAt: new Date().toISOString().split('T')[0]
+                };
+                systemData.clients.push(newClient);
+                showNotification('success', 'Cliente adicionado com sucesso!');
+            }
+            
+            saveData();
+            loadClients();
+            closeClientModal();
+        });
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
