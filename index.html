@@ -607,6 +607,9 @@
 
         let currentUser = null;
         let currentUserType = null;
+        let sessionTimeout = null;
+        const TIMEOUT_MINUTES = 10;
+        const TIMEOUT_MS = TIMEOUT_MINUTES * 60 * 1000;
 
         // Carregar dados do localStorage
         function loadData() {
@@ -622,6 +625,73 @@
             showNotification('success', 'Dados salvos com sucesso!');
         }
 
+        // Salvar sessão
+        function saveSession() {
+            const sessionData = {
+                user: currentUser,
+                userType: currentUserType,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('aponttpay_session', JSON.stringify(sessionData));
+        }
+
+        // Carregar sessão
+        function loadSession() {
+            const saved = localStorage.getItem('aponttpay_session');
+            if (saved) {
+                const sessionData = JSON.parse(saved);
+                const now = Date.now();
+                const timeDiff = now - sessionData.timestamp;
+                
+                if (timeDiff < TIMEOUT_MS) {
+                    currentUser = sessionData.user;
+                    currentUserType = sessionData.userType;
+                    
+                    // Restaurar sessão baseada no tipo de usuário
+                    if (currentUserType === 'admin') {
+                        showAdminPanel();
+                    } else if (currentUserType === 'partner') {
+                        showPartnerPortal(currentUser);
+                    } else if (currentUserType === 'reseller') {
+                        showResellerPortal(currentUser);
+                    }
+                    
+                    startSessionTimeout();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Limpar sessão
+        function clearSession() {
+            localStorage.removeItem('aponttpay_session');
+            if (sessionTimeout) {
+                clearTimeout(sessionTimeout);
+                sessionTimeout = null;
+            }
+        }
+
+        // Iniciar timeout da sessão
+        function startSessionTimeout() {
+            if (sessionTimeout) {
+                clearTimeout(sessionTimeout);
+            }
+            
+            sessionTimeout = setTimeout(() => {
+                showNotification('warning', 'Sessão expirada por inatividade!');
+                logout();
+            }, TIMEOUT_MS);
+        }
+
+        // Resetar timeout (chamado em atividade do usuário)
+        function resetSessionTimeout() {
+            if (currentUser) {
+                saveSession(); // Atualiza timestamp
+                startSessionTimeout();
+            }
+        }
+
         // Sistema de login
         document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -633,6 +703,8 @@
             if (username === 'admin' && password === 'admin123') {
                 currentUser = { username: 'admin' };
                 currentUserType = 'admin';
+                saveSession();
+                startSessionTimeout();
                 showAdminPanel();
                 return;
             }
@@ -642,6 +714,8 @@
             if (partner) {
                 currentUser = partner;
                 currentUserType = 'partner';
+                saveSession();
+                startSessionTimeout();
                 showPartnerPortal(partner);
                 return;
             }
@@ -651,6 +725,8 @@
             if (reseller) {
                 currentUser = reseller;
                 currentUserType = 'reseller';
+                saveSession();
+                startSessionTimeout();
                 showResellerPortal(reseller);
                 return;
             }
@@ -756,6 +832,8 @@
             if (partner) {
                 currentUser = partner;
                 currentUserType = 'partner';
+                saveSession();
+                startSessionTimeout();
                 closeModal();
                 document.getElementById('admin-panel').classList.remove('active');
                 showPartnerPortal(partner);
@@ -916,6 +994,7 @@
         function logout() {
             currentUser = null;
             currentUserType = null;
+            clearSession();
             
             // Ocultar todos os portais
             document.getElementById('admin-panel').classList.remove('active');
@@ -1076,6 +1155,18 @@
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
+            
+            // Tentar carregar sessão existente
+            if (!loadSession()) {
+                // Se não há sessão válida, mostrar tela de login
+                document.getElementById('login-screen').style.display = 'block';
+            }
+            
+            // Adicionar listeners para detectar atividade do usuário
+            const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+            events.forEach(event => {
+                document.addEventListener(event, resetSessionTimeout, true);
+            });
         });
     </script>
 </body>
