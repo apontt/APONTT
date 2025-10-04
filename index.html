@@ -610,154 +610,19 @@
         let sessionTimeout = null;
         const TIMEOUT_MINUTES = 10;
         const TIMEOUT_MS = TIMEOUT_MINUTES * 60 * 1000;
-        let syncInterval = null;
-        const SYNC_INTERVAL_MS = 5000; // Sincronizar a cada 5 segundos
 
-        // Carregar dados do localStorage e sincronizar
+        // Carregar dados do localStorage
         function loadData() {
-            // Tentar carregar dados locais primeiro
-            const saved = localStorage.getItem('aponttpay_data_global');
+            const saved = localStorage.getItem('aponttpay_data');
             if (saved) {
-                try {
-                    const parsedData = JSON.parse(saved);
-                    systemData = parsedData;
-                } catch (e) {
-                    console.log('Erro ao carregar dados:', e);
-                }
+                systemData = JSON.parse(saved);
             }
-            
-            // Sincronizar com outros navegadores
-            syncDataAcrossBrowsers();
         }
 
-        // Salvar dados no localStorage com sincronização
+        // Salvar dados no localStorage
         function saveData() {
-            const dataToSave = {
-                ...systemData,
-                lastUpdate: Date.now(),
-                syncId: generateSyncId()
-            };
-            
-            localStorage.setItem('aponttpay_data_global', JSON.stringify(dataToSave));
-            
-            // Salvar também em uma chave compartilhada para sincronização
-            try {
-                // Usar IndexedDB ou WebSQL como fallback para compartilhamento
-                if (window.indexedDB) {
-                    saveToIndexedDB(dataToSave);
-                }
-            } catch (e) {
-                console.log('Erro na sincronização:', e);
-            }
-            
-            showNotification('success', 'Dados salvos e sincronizados!');
-        }
-
-        // Gerar ID único para sincronização
-        function generateSyncId() {
-            return Date.now().toString(36) + Math.random().toString(36).substr(2);
-        }
-
-        // Sincronizar dados entre navegadores
-        function syncDataAcrossBrowsers() {
-            if (window.indexedDB) {
-                loadFromIndexedDB();
-            }
-        }
-
-        // Salvar no IndexedDB para compartilhamento
-        function saveToIndexedDB(data) {
-            const request = indexedDB.open('AponttPayDB', 1);
-            
-            request.onupgradeneeded = function(e) {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains('systemData')) {
-                    db.createObjectStore('systemData', { keyPath: 'id' });
-                }
-            };
-            
-            request.onsuccess = function(e) {
-                const db = e.target.result;
-                const transaction = db.transaction(['systemData'], 'readwrite');
-                const store = transaction.objectStore('systemData');
-                store.put({ id: 'main', data: data });
-            };
-        }
-
-        // Carregar do IndexedDB
-        function loadFromIndexedDB() {
-            const request = indexedDB.open('AponttPayDB', 1);
-            
-            request.onsuccess = function(e) {
-                const db = e.target.result;
-                if (db.objectStoreNames.contains('systemData')) {
-                    const transaction = db.transaction(['systemData'], 'readonly');
-                    const store = transaction.objectStore('systemData');
-                    const getRequest = store.get('main');
-                    
-                    getRequest.onsuccess = function() {
-                        if (getRequest.result && getRequest.result.data) {
-                            const savedData = getRequest.result.data;
-                            const localData = localStorage.getItem('aponttpay_data_global');
-                            
-                            if (localData) {
-                                const localParsed = JSON.parse(localData);
-                                // Se os dados do IndexedDB são mais recentes
-                                if (!localParsed.lastUpdate || savedData.lastUpdate > localParsed.lastUpdate) {
-                                    systemData = savedData;
-                                    localStorage.setItem('aponttpay_data_global', JSON.stringify(savedData));
-                                    refreshCurrentView();
-                                }
-                            } else {
-                                systemData = savedData;
-                                localStorage.setItem('aponttpay_data_global', JSON.stringify(savedData));
-                                refreshCurrentView();
-                            }
-                        }
-                    };
-                }
-            };
-        }
-
-        // Atualizar visualização atual
-        function refreshCurrentView() {
-            if (currentUserType === 'admin') {
-                loadPartners();
-                loadClients();
-            } else if (currentUserType === 'partner' && currentUser) {
-                // Atualizar dados do parceiro atual
-                const updatedPartner = systemData.partners.find(p => p.id === currentUser.id);
-                if (updatedPartner) {
-                    currentUser = updatedPartner;
-                    showPartnerPortal(updatedPartner);
-                }
-            } else if (currentUserType === 'reseller' && currentUser) {
-                // Atualizar dados do revendedor atual
-                const updatedReseller = systemData.resellers.find(r => r.id === currentUser.id);
-                if (updatedReseller) {
-                    currentUser = updatedReseller;
-                    showResellerPortal(updatedReseller);
-                }
-            }
-        }
-
-        // Iniciar sincronização automática
-        function startAutoSync() {
-            if (syncInterval) {
-                clearInterval(syncInterval);
-            }
-            
-            syncInterval = setInterval(() => {
-                syncDataAcrossBrowsers();
-            }, SYNC_INTERVAL_MS);
-        }
-
-        // Parar sincronização
-        function stopAutoSync() {
-            if (syncInterval) {
-                clearInterval(syncInterval);
-                syncInterval = null;
-            }
+            localStorage.setItem('aponttpay_data', JSON.stringify(systemData));
+            showNotification('success', 'Dados salvos com sucesso!');
         }
 
         // Salvar sessão
@@ -840,7 +705,6 @@
                 currentUserType = 'admin';
                 saveSession();
                 startSessionTimeout();
-                startAutoSync();
                 showAdminPanel();
                 return;
             }
@@ -1131,7 +995,6 @@
             currentUser = null;
             currentUserType = null;
             clearSession();
-            stopAutoSync();
             
             // Ocultar todos os portais
             document.getElementById('admin-panel').classList.remove('active');
@@ -1297,28 +1160,12 @@
             if (!loadSession()) {
                 // Se não há sessão válida, mostrar tela de login
                 document.getElementById('login-screen').style.display = 'block';
-            } else {
-                // Se há sessão válida, iniciar sincronização
-                startAutoSync();
             }
             
             // Adicionar listeners para detectar atividade do usuário
             const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
             events.forEach(event => {
                 document.addEventListener(event, resetSessionTimeout, true);
-            });
-            
-            // Listener para sincronização entre abas do mesmo navegador
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'aponttpay_data_global' && e.newValue) {
-                    try {
-                        const newData = JSON.parse(e.newValue);
-                        systemData = newData;
-                        refreshCurrentView();
-                    } catch (err) {
-                        console.log('Erro na sincronização entre abas:', err);
-                    }
-                }
             });
         });
     </script>
