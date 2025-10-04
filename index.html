@@ -424,6 +424,11 @@
                         <input type="text" class="form-control" id="partner-responsible" required>
                     </div>
                     
+                    <div class="form-group">
+                        <label class="form-label">Nova Senha (deixe em branco para manter atual)</label>
+                        <input type="password" class="form-control" id="partner-new-password" placeholder="Digite nova senha">
+                    </div>
+                    
                     <button type="submit" class="btn btn-primary">Salvar Alterações</button>
                 </form>
             </div>
@@ -462,6 +467,11 @@
                     <div class="form-group">
                         <label class="form-label">Telefone</label>
                         <input type="tel" class="form-control" id="reseller-phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nova Senha (deixe em branco para manter atual)</label>
+                        <input type="password" class="form-control" id="reseller-new-password" placeholder="Digite nova senha">
                     </div>
                     
                     <button type="submit" class="btn btn-primary">Salvar Alterações</button>
@@ -634,9 +644,11 @@
         }
 
         // Salvar dados no localStorage
-        function saveData() {
+        function saveData(showNotif = true) {
             localStorage.setItem('aponttpay_data', JSON.stringify(systemData));
-            showNotification('success', 'Dados salvos com sucesso!');
+            if (showNotif) {
+                showNotification('success', 'Dados salvos com sucesso!');
+            }
         }
 
         // Salvar sessão
@@ -925,7 +937,9 @@
                         const photoDiv = document.getElementById('partner-photo');
                         photoDiv.innerHTML = `<img src="${photoData}" alt="Foto"><button class="photo-upload" onclick="uploadPartnerPhoto()"><i class="fas fa-camera"></i></button>`;
                         
+                        // Salvar automaticamente
                         saveData();
+                        saveSession();
                     };
                     reader.readAsDataURL(file);
                 }
@@ -954,7 +968,9 @@
                         const photoDiv = document.getElementById('reseller-photo');
                         photoDiv.innerHTML = `<img src="${photoData}" alt="Foto"><button class="photo-upload" onclick="uploadResellerPhoto()"><i class="fas fa-camera"></i></button>`;
                         
+                        // Salvar automaticamente
                         saveData();
+                        saveSession();
                     };
                     reader.readAsDataURL(file);
                 }
@@ -970,6 +986,7 @@
             const email = document.getElementById('partner-email').value;
             const phone = document.getElementById('partner-phone').value;
             const responsible = document.getElementById('partner-responsible').value;
+            const newPassword = document.getElementById('partner-new-password').value;
             
             // Atualizar dados
             currentUser.company = company;
@@ -977,12 +994,20 @@
             currentUser.phone = phone;
             currentUser.responsible = responsible;
             
+            // Atualizar senha se fornecida
+            if (newPassword.trim()) {
+                currentUser.password = newPassword.trim();
+                showNotification('success', 'Senha alterada com sucesso!');
+            }
+            
             const partnerIndex = systemData.partners.findIndex(p => p.id === currentUser.id);
             if (partnerIndex !== -1) {
                 systemData.partners[partnerIndex] = { ...systemData.partners[partnerIndex], ...currentUser };
             }
             
+            // Salvar automaticamente
             saveData();
+            saveSession();
         });
 
         // Salvar perfil do revendedor
@@ -992,18 +1017,27 @@
             const name = document.getElementById('reseller-name').value;
             const email = document.getElementById('reseller-email').value;
             const phone = document.getElementById('reseller-phone').value;
+            const newPassword = document.getElementById('reseller-new-password').value;
             
             // Atualizar dados
             currentUser.name = name;
             currentUser.email = email;
             currentUser.phone = phone;
             
+            // Atualizar senha se fornecida
+            if (newPassword.trim()) {
+                currentUser.password = newPassword.trim();
+                showNotification('success', 'Senha alterada com sucesso!');
+            }
+            
             const resellerIndex = systemData.resellers.findIndex(r => r.id === currentUser.id);
             if (resellerIndex !== -1) {
                 systemData.resellers[resellerIndex] = { ...systemData.resellers[resellerIndex], ...currentUser };
             }
             
+            // Salvar automaticamente
             saveData();
+            saveSession();
         });
 
         // Logout
@@ -1100,7 +1134,7 @@
             if (client) {
                 const newStatus = client.status === 'ativo' ? 'inativo' : 'ativo';
                 client.status = newStatus;
-                saveData();
+                saveData(false);
                 loadClients();
                 showNotification('success', `Status do cliente alterado para ${newStatus.toUpperCase()}!`);
             }
@@ -1112,7 +1146,7 @@
                 const index = systemData.clients.findIndex(c => c.id === clientId);
                 if (index !== -1) {
                     systemData.clients.splice(index, 1);
-                    saveData();
+                    saveData(false);
                     loadClients();
                     showNotification('success', 'Cliente excluído com sucesso!');
                 }
@@ -1178,7 +1212,7 @@
                 showNotification('success', 'Cliente adicionado com sucesso!');
             }
             
-            saveData();
+            saveData(false);
             loadClients();
             closeClientModal();
         });
