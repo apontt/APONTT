@@ -5,7 +5,7 @@ const { exec } = require('child_process');
 
 const PORT = 8000;
 const HOSTNAME = 'localhost';
-const DEFAULT_HTML_FILE = 'deepseek_html_20250909_2bf8a5.html';
+const DEFAULT_HTML_FILE = 'index.html';
 
 // Mover mimeTypes para fora do handler para melhor performance
 const MIME_TYPES = {
