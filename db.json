@@ -1,0 +1,15 @@
+{
+  "partners": [
+    {
+      "id": "mggdq590bib5ivn2zt",
+      "companyName": "Teste Ltda",
+      "document": "12.345.678/0001-90",
+      "email": "teste@teste.com",
+      "phone": "(11)99999-9999",
+      "responsible": "Fulano",
+      "logo": null,
+      "createdAt": "2025-10-07T09:50:41.173Z",
+      "updatedAt": "2025-10-07T09:50:41.173Z"
+    }
+  ]
+}

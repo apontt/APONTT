@@ -2,10 +2,10 @@
   "name": "aponttpay-system",
   "version": "2.1.0",
   "description": "Sistema Completo APONTTPAY - Gestão de Parceiros, Clientes, Contratos e Pagamentos",
-  "main": "server-fixed.js",
+  "main": "server-realtime.js",
   "scripts": {
-    "start": "node server-fixed.js",
-    "dev": "node server-fixed.js",
+    "start": "node server-realtime.js",
+    "dev": "node server-realtime.js",
     "test": "echo \"Sistema testado com sucesso\" && exit 0"
   },
   "keywords": [
@@ -20,5 +20,12 @@
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"
+  }
+
+  ,"dependencies":{
+    "express":"^4.18.2",
+    "cors":"^2.8.5",
+    "multer":"^1.4.5-lts.1",
+    "socket.io":"^4.7.2"
   }
 }
