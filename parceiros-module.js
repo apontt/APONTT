@@ -102,6 +102,76 @@ function openEditModal(id) {
   });
 }
 
+// Carregar clients de um partner e exibir na aba clients
+async function loadPartnerClients(partnerId) {
+  try {
+    const res = await fetch(`${API_BASE}/partners/${partnerId}/clients`);
+    const json = await res.json();
+    const clients = json.data || [];
+    const container = document.getElementById('partner-clients');
+    container.innerHTML = '';
+    clients.forEach(cl => {
+      const el = document.createElement('div');
+      el.className = 'quick-action';
+      el.innerHTML = `<strong>${escapeHtml(cl.name)}</strong><div>${escapeHtml(cl.document||'')}</div><div>R$ ${cl.contractValue||0}</div><div><button class="btn btn-sm btn-info" onclick="openClientEdit('${cl.id}')">Editar</button></div>`;
+      container.appendChild(el);
+    });
+  } catch (e) { console.error(e); }
+}
+
+function openClientEdit(clientId) {
+  // buscar client a partir do backend
+  fetch(`${API_BASE}/partners`) // obter all e localizar
+    .then(r=>r.json())
+    .then(async j=>{
+      // buscar clients endpoint direto (procurar partnerId que contenha o client)
+      // para simplificar, chamar GET /api/partners and then iterate
+      const allPartners = j.data || [];
+      let found;
+      for (const p of allPartners) {
+        const resp = await fetch(`${API_BASE}/partners/${p.id}/clients`);
+        const js = await resp.json();
+        const cl = (js.data || []).find(c=>c.id===clientId);
+        if (cl) { found = cl; break; }
+      }
+      if (!found) return alert('Cliente não encontrado');
+      // abrir modal de edição de cliente
+      openClientModal(found);
+    });
+}
+
+function openClientModal(client) {
+  // criar modal dinâmico se não existir
+  let modal = document.getElementById('client-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'client-modal';
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `\
+      <div class="modal"><div class="modal-header"><h3 class="modal-title">Editar Cliente</h3><button class="modal-close" id="client-close">&times;</button></div><div class="modal-body"><form id="client-form"><div class="form-grid"><div class="form-group"><label class="form-label">Nome</label><input class="form-control" id="client-name" required></div><div class="form-group"><label class="form-label">Documento</label><input class="form-control" id="client-document"></div><div class="form-group"><label class="form-label">Valor do Contrato</label><input class="form-control" id="client-contract" type="number"></div><div class="form-group"><label class="form-label">Status</label><select class="form-control" id="client-status"><option value="active">Ativo</option><option value="in_contract">Em Contrato</option><option value="cancelled">Cancelado</option></select></div></div></form></div><div class="modal-footer"><button class="btn" id="client-cancel">Cancelar</button><button class="btn btn-primary" id="client-save">Salvar</button></div></div>`;
+    document.body.appendChild(modal);
+    document.getElementById('client-close').addEventListener('click', ()=>modal.classList.remove('active'));
+    document.getElementById('client-cancel').addEventListener('click', ()=>modal.classList.remove('active'));
+    document.getElementById('client-save').addEventListener('click', async ()=>{
+      const id = modal.dataset.clientId;
+      const payload = { name: document.getElementById('client-name').value, document: document.getElementById('client-document').value, contractValue: Number(document.getElementById('client-contract').value||0), status: document.getElementById('client-status').value };
+      const resp = await fetch(`${API_BASE}/clients/${id}`, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(payload) });
+      const js = await resp.json();
+      if (js.success) {
+        modal.classList.remove('active');
+        showNotification('Cliente atualizado', 'success');
+      } else showNotification('Erro ao atualizar cliente', 'error');
+    });
+  }
+  // preencher campos
+  modal.dataset.clientId = client.id;
+  modal.querySelector('#client-name').value = client.name||'';
+  modal.querySelector('#client-document').value = client.document||'';
+  modal.querySelector('#client-contract').value = client.contractValue||0;
+  modal.querySelector('#client-status').value = client.status||'active';
+  modal.classList.add('active');
+}
+
 function showModal() { document.getElementById('partner-modal').classList.add('active'); }
 function closeModal() { document.getElementById('partner-modal').classList.remove('active'); }
 

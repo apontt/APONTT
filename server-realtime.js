@@ -50,6 +50,9 @@ io.on('connection', (socket) => {
 // Helpers
 const generateId = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
+// garantir estrutura de clients dentro do DB
+if (!db.clients) db.clients = [];
+
 // Rotas
 app.get('/api/partners', (req, res) => {
   res.json({ success: true, data: db.partners });
@@ -119,6 +122,43 @@ app.put('/api/partners/:id', upload.single('logo'), (req, res) => {
 
 // Servir uploads
 app.use('/uploads', express.static(uploadDir));
+
+// Clients endpoints
+app.get('/api/partners/:id/clients', (req, res) => {
+  const partner = db.partners.find(p => p.id === req.params.id);
+  if (!partner) return res.status(404).json({ success: false, message: 'Parceiro não encontrado' });
+  const clients = (db.clients || []).filter(c => c.partnerId === req.params.id);
+  res.json({ success: true, data: clients });
+});
+
+app.post('/api/partners/:id/clients', (req, res) => {
+  const partner = db.partners.find(p => p.id === req.params.id);
+  if (!partner) return res.status(404).json({ success: false, message: 'Parceiro não encontrado' });
+  const { name, document, contractValue, status } = req.body;
+  const newClient = {
+    id: generateId(), partnerId: req.params.id, name, document, contractValue: contractValue || 0, status: status || 'active', createdAt: new Date()
+  };
+  db.clients.push(newClient);
+  saveDB();
+  io.emit('client:created', newClient);
+  res.status(201).json({ success: true, data: newClient });
+});
+
+app.put('/api/clients/:id', (req, res) => {
+  const idx = (db.clients || []).findIndex(c => c.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ success: false, message: 'Cliente não encontrado' });
+  const client = db.clients[idx];
+  const { name, document, contractValue, status } = req.body;
+  if (name) client.name = name;
+  if (document) client.document = document;
+  if (contractValue) client.contractValue = contractValue;
+  if (status) client.status = status;
+  client.updatedAt = new Date();
+  db.clients[idx] = client;
+  saveDB();
+  io.emit('client:updated', client);
+  res.json({ success: true, data: client });
+});
 
 // Página principal
 app.get('/', (req, res) => {
