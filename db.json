@@ -10,6 +10,59 @@
       "logo": null,
       "createdAt": "2025-10-07T09:50:41.173Z",
       "updatedAt": "2025-10-07T09:50:41.173Z"
+    },
+    {
+      "id": "mgijkxjyy8608rwppu",
+      "companyName": "TEST_AUTOMATION",
+      "document": "00000000/0001",
+      "email": "auto@test",
+      "phone": "--------------------------cjQHR0pHP1GixIXqHxr6pY\r\nContent-Disposition: attachment; name=\"responsible\"\r\n\r\nBot\r\n--------------------------cjQHR0pHP1GixIXqHxr6pY\r\nContent-Disposition: attachment; name=\"logo\"; filename=\"test-logo.png\"\r\nContent-Type: image/png\r\n\r\n�PNG\r\n\u001a\n\u0000\u0000\u0000\rIHDR\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0001\b\u0004\u0000\u0000\u0000�\u001c\f\u0002\u0000\u0000\u0000\u000bIDATx�c``\u0000\u0000\u0000\u0003\u0000\u0001+\tM�\u0000\u0000\u0000\u0000IEND�B`�\r\n--------------------------cjQHR0pHP1GixIXqHxr6pY--\r\n",
+      "logo": null,
+      "createdAt": "2025-10-08T22:10:07.969Z",
+      "updatedAt": "2025-10-08T22:10:07.970Z"
+    },
+    {
+      "id": "mgijzp9gu3xnvclrjwn",
+      "companyName": "TEST_AUTOMATION_NODE",
+      "document": "00000000/0001",
+      "email": "auto@node",
+      "phone": "(00)00000-0000",
+      "responsible": "BotNode",
+      "logo": "/uploads/1759962096946-405373076.png",
+      "createdAt": "2025-10-08T22:21:37.061Z",
+      "updatedAt": "2025-10-08T22:21:37.061Z"
+    },
+    {
+      "id": "mgik4000hkjr226s90v",
+      "companyName": "TEST_AUTOMATION_NODE",
+      "document": "00000000/0001",
+      "email": "auto@node",
+      "phone": "(00)00000-0000",
+      "responsible": "BotNode",
+      "logo": "/uploads/1759962297589-609424255.png",
+      "createdAt": "2025-10-08T22:24:57.600Z",
+      "updatedAt": "2025-10-08T22:24:57.600Z"
+    }
+  ],
+  "clients": [
+    {
+      "id": "mggn4urnxfvgezykgyq",
+      "partnerId": "mggdq590bib5ivn2zt",
+      "name": "Cliente XY",
+      "document": "12.345.678/0001-11",
+      "contractValue": 10000,
+      "status": "active",
+      "createdAt": "2025-10-07T14:14:03.972Z"
+    },
+    {
+      "id": "mgik8tncelnp9ww05ij",
+      "partnerId": "mgik4000hkjr226s90v",
+      "name": "E2E Client Updated",
+      "document": "99.999.999/0001-99",
+      "contractValue": 54321,
+      "status": "active",
+      "createdAt": "2025-10-08T22:28:42.649Z",
+      "updatedAt": "2025-10-08T22:28:44.320Z"
     }
   ]
 }

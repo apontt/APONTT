@@ -2,6 +2,7 @@
 
 const API_BASE = '/api';
 let socket;
+window.IS_ADMIN = false; // flag simples para controle de admin (frontend only)
 
 async function init() {
   await loadPartners();
@@ -25,9 +26,9 @@ function renderPartners(partners) {
   const grid = document.getElementById('partners-grid');
   grid.innerHTML = '';
   partners.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'partner-card';
-    card.innerHTML = `
+  const card = document.createElement('div');
+  card.className = 'partner-card';
+  card.innerHTML = `
       <div class="partner-header">
         <div class="partner-info">
           <h3>${escapeHtml(p.companyName)}</h3>
@@ -48,7 +49,7 @@ function renderPartners(partners) {
           <div style="font-size:0.9rem;color:rgba(255,255,255,0.9)">${p.createdAt ? new Date(p.createdAt).toLocaleString() : ''}</div>
         </div>
         <div class="partner-actions">
-          <button class="btn btn-sm btn-info" onclick="openEditModal('${p.id}')"><i class="fas fa-edit"></i></button>
+          ${window.IS_ADMIN ? `<button class="btn btn-sm btn-info" onclick="openEditModal('${p.id}')"><i class="fas fa-edit"></i></button>` : ''}
         </div>
       </div>
     `;
@@ -69,6 +70,16 @@ function setupUI() {
   document.getElementById('modal-close').addEventListener('click', closeModal);
   document.getElementById('cancel-btn').addEventListener('click', closeModal);
   document.getElementById('save-btn').addEventListener('click', submitPartner);
+  const adminToggle = document.getElementById('admin-toggle');
+  if (adminToggle) {
+    adminToggle.addEventListener('click', () => {
+      window.IS_ADMIN = !window.IS_ADMIN;
+      adminToggle.textContent = window.IS_ADMIN ? 'Sair do Admin' : 'Entrar como Admin';
+      showNotification(window.IS_ADMIN ? 'Modo Admin ativado' : 'Modo Admin desativado', 'info');
+      // re-render partners to update buttons
+      loadPartners();
+    });
+  }
 }
 
 function openCreateModal() {
@@ -113,7 +124,30 @@ async function loadPartnerClients(partnerId) {
     clients.forEach(cl => {
       const el = document.createElement('div');
       el.className = 'quick-action';
-      el.innerHTML = `<strong>${escapeHtml(cl.name)}</strong><div>${escapeHtml(cl.document||'')}</div><div>R$ ${cl.contractValue||0}</div><div><button class="btn btn-sm btn-info" onclick="openClientEdit('${cl.id}')">Editar</button></div>`;
+
+      const title = document.createElement('div');
+      title.innerHTML = `<strong>${escapeHtml(cl.name)}</strong>`;
+
+      const doc = document.createElement('div');
+      doc.textContent = cl.document || '';
+
+      const value = document.createElement('div');
+      value.textContent = `R$ ${cl.contractValue || 0}`;
+
+      const actions = document.createElement('div');
+      if (window.IS_ADMIN) {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-sm btn-info';
+        btn.textContent = 'Editar';
+        // Abrir modal diretamente com os dados do client já carregados
+        btn.addEventListener('click', () => openClientModal(cl));
+        actions.appendChild(btn);
+      }
+
+      el.appendChild(title);
+      el.appendChild(doc);
+      el.appendChild(value);
+      el.appendChild(actions);
       container.appendChild(el);
     });
   } catch (e) { console.error(e); }
