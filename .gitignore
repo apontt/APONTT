@@ -1,3 +1,44 @@
+# Node
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+
+# Build
+dist/
+
+# Uploads and test artifacts
+uploads/
+*.png
+test-logo.png
+socket-log.txt
+upload-partner.js
+listen-socket.js
+partner_create.json
+partners_list.json
+partners_brief.txt
+client_create.json
+client_update.json
+clients_list.json
+clients_test.json
+e2e_*.json
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
 # Logs
 *.log
 npm-debug.log*
