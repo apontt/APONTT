@@ -28,7 +28,7 @@
     }
 
     #login-screen {
-      display: flex;
+      display: flex !important;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
@@ -1271,11 +1271,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
             
+            // Sempre mostrar tela de login inicialmente
+            document.getElementById('login-screen').style.display = 'block';
+            
             // Tentar carregar sessão existente
-            if (!loadSession()) {
-                // Se não há sessão válida, mostrar tela de login
-                document.getElementById('login-screen').style.display = 'block';
-            }
+            loadSession();
             
             // Adicionar listeners para detectar atividade do usuário
             const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
