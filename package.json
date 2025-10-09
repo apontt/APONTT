@@ -1,12 +1,14 @@
 {
-  "name": "aponttpay-system",
-  "version": "2.1.0",
+  "name": "@aponttpay/system",
+  "version": "2.1.1",
   "description": "Sistema Completo APONTTPAY - Gestão de Parceiros, Clientes, Contratos e Pagamentos",
   "main": "server-realtime.js",
   "scripts": {
     "start": "node server-realtime.js",
-    "dev": "node server-realtime.js",
-    "test": "echo \"Sistema testado com sucesso\" && exit 0"
+    "dev": "nodemon server-realtime.js",
+    "test": "echo \"Sistema testado com sucesso\" && exit 0",
+    "security-audit": "npm audit",
+    "lint": "eslint ."
   },
   "keywords": [
     "aponttpay",
@@ -14,20 +16,37 @@
     "parceiros",
     "clientes",
     "contratos",
-    "pagamentos"
+    "pagamentos",
+    "seguranca"
   ],
   "author": "APONTTPAY Team",
   "license": "MIT",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   },
   "dependencies": {
     "axios": "^1.12.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
     "form-data": "^4.0.4",
+    "helmet": "^7.1.0",
     "multer": "^1.4.5-lts.1",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.8.1"
-  }
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "eslint": "^8.55.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apontt/APONTT.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apontt/APONTT/issues"
+  },
+  "homepage": "https://apontt.github.io/APONTT"
 }

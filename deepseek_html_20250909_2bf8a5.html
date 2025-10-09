@@ -3475,11 +3475,61 @@
         const STORAGE_KEY = 'aponttpay_system_data';
         const SESSION_KEY = 'aponttpay_session';
         
+        // Função para gerar hash seguro (simulação)
+        function generateSecureHash(password) {
+            // Em produção, usar bcrypt ou similar
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return 'hash_' + Math.abs(hash).toString(16);
+        }
+        
+        // Função para verificar senha
+        function verifyPassword(password, hash) {
+            return generateSecureHash(password) === hash;
+        }
+        
+        // Sanitizar entrada do usuário
+        function sanitizeInput(input) {
+            if (typeof input !== 'string') return '';
+            return input.replace(/[<>"'&]/g, function(match) {
+                const map = {
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#x27;',
+                    '&': '&amp;'
+                };
+                return map[match];
+            });
+        }
+        
+        // Validar email
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Validar telefone
+        function isValidPhone(phone) {
+            const phoneRegex = /^\([0-9]{2}\)\s[0-9]{4,5}-[0-9]{4}$/;
+            return phoneRegex.test(phone) || phone.length >= 10;
+        }
+        
+        // Validar documento (CPF/CNPJ)
+        function isValidDocument(doc) {
+            const cleanDoc = doc.replace(/[^0-9]/g, '');
+            return cleanDoc.length === 11 || cleanDoc.length === 14;
+        }
+        
         // Dados padrão do sistema
         const defaultSystemData = {
             users: [
-                { username: 'admin', password: 'admin123', name: 'Administrador', type: 'admin' },
-                { username: 'parceiro', password: 'parceiro123', name: 'Parceiro', type: 'partner' }
+                { username: 'admin', password: generateSecureHash('admin123'), name: 'Administrador', type: 'admin' },
+                { username: 'parceiro', password: generateSecureHash('parceiro123'), name: 'Parceiro', type: 'partner' }
             ],
             clients: [],
             partnerClients: {
@@ -3512,7 +3562,7 @@
                     accessCount: 15,
                     lastAccess: '20/01/2024 14:30',
                     username: 'partner1',
-                    password: 'partner123'
+                    password: generateSecureHash('partner123')
                 },
                 {
                     id: 2,
@@ -3530,7 +3580,7 @@
                     accessCount: 3,
                     lastAccess: '18/01/2024 09:15',
                     username: 'partner2',
-                    password: 'partner123'
+                    password: generateSecureHash('partner123')
                 }
             ],
             contracts: [],
@@ -3728,8 +3778,12 @@
             const password = document.getElementById('password').value;
             const remember = document.getElementById('remember').checked;
             
+            // Sanitizar entrada
+            const cleanUsername = sanitizeInput(username);
+            const cleanPassword = sanitizeInput(password);
+            
             // Verificar credenciais
-            const user = systemData.users.find(u => u.username === username && u.password === password);
+            const user = systemData.users.find(u => u.username === cleanUsername && verifyPassword(cleanPassword, u.password));
             
             if (user) {
                 // Salvar sessão se "Lembrar-me" estiver marcado
@@ -3754,8 +3808,12 @@
             const username = document.getElementById('partner-username').value;
             const password = document.getElementById('partner-password').value;
             
+            // Sanitizar entrada
+            const cleanUsername = sanitizeInput(username);
+            const cleanPassword = sanitizeInput(password);
+            
             // Verificar credenciais do parceiro
-            const partner = systemData.partners.find(p => p.username === username && p.password === password);
+            const partner = systemData.partners.find(p => p.username === cleanUsername && verifyPassword(cleanPassword, p.password));
             
             if (partner) {
                 // Salvar sessão do parceiro
@@ -3911,10 +3969,22 @@
 
         // Adicionar linha na tabela
         function addClientRow(name, email, phone, document) {
+            // Sanitizar dados
+            const safeName = sanitizeInput(name);
+            const safeEmail = sanitizeInput(email);
+            const safePhone = sanitizeInput(phone);
+            const safeDocument = sanitizeInput(document);
+            
+            // Validar dados
+            if (!isValidEmail(safeEmail)) {
+                showNotification('error', 'Erro', 'Email inválido: ' + safeEmail);
+                return;
+            }
+            
             const tbody = document.querySelector('#clients-section table tbody');
             if (tbody) {
                 const row = document.createElement('tr');
-                row.innerHTML = '<td><input type="checkbox" class="client-checkbox" onchange="updateBulkButtons()"></td><td>' + name + '</td><td>' + document + '</td><td>' + email + '</td><td>' + phone + '</td><td><span class="status status-active">Ativo</span></td><td><span class="status status-pending">Em Processo</span></td><td><div class="action-buttons"><button class="btn btn-primary btn-sm" onclick="editClient(this)"><i class="fas fa-edit"></i></button><button class="btn btn-primary btn-sm" onclick="viewClient(this)"><i class="fas fa-eye"></i></button><button class="btn btn-primary btn-sm" onclick="toggleProcessStatus(this)"><i class="fas fa-check"></i></button><button class="btn btn-primary btn-sm" onclick="deleteClient(this)"><i class="fas fa-trash"></i></button></div></td>';
+                row.innerHTML = `<td><input type="checkbox" class="client-checkbox" onchange="updateBulkButtons()"></td><td>${safeName}</td><td>${safeDocument}</td><td>${safeEmail}</td><td>${safePhone}</td><td><span class="status status-active">Ativo</span></td><td><span class="status status-pending">Em Processo</span></td><td><div class="action-buttons"><button class="btn btn-primary btn-sm" onclick="editClient(this)"><i class="fas fa-edit"></i></button><button class="btn btn-primary btn-sm" onclick="viewClient(this)"><i class="fas fa-eye"></i></button><button class="btn btn-primary btn-sm" onclick="toggleProcessStatus(this)"><i class="fas fa-check"></i></button><button class="btn btn-primary btn-sm" onclick="deleteClient(this)"><i class="fas fa-trash"></i></button></div></td>`;
                 tbody.appendChild(row);
                 
                 // Salvar dados automaticamente
