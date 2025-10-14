@@ -1239,7 +1239,7 @@
         }
     </style>
 </head>
-<body>
+<body style="visibility: hidden;">
     <!-- Notification Container -->
     <div class="notification-container" id="notification-container"></div>
 
@@ -3669,6 +3669,31 @@
         // Inicializar dados do sistema
         let systemData = loadSystemData();
         
+        // Inicialização da página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Garantir que a página seja exibida corretamente
+            document.body.style.visibility = 'visible';
+            
+            // Verificar sessão ativa
+            if (!checkActiveSession()) {
+                // Mostrar tela de login
+                document.body.classList.add('login-mode');
+                loginScreen.style.display = 'flex';
+                appContainer.style.display = 'none';
+            }
+        });
+        
+        // Fallback para garantir carregamento
+        window.addEventListener('load', function() {
+            document.body.style.visibility = 'visible';
+            if (!document.getElementById('login-screen').style.display || document.getElementById('login-screen').style.display === 'none') {
+                if (!document.getElementById('app-container').style.display || document.getElementById('app-container').style.display === 'none') {
+                    document.body.classList.add('login-mode');
+                    document.getElementById('login-screen').style.display = 'flex';
+                }
+            }
+        });
+        
         let currentPartnerId = null;
         let currentResellerId = null;
 
@@ -3733,40 +3758,38 @@
 
         // Verificar sessão ativa ao carregar a página
         function checkActiveSession() {
-            const session = loadUserSession();
-            if (session) {
-                const { user, userType, loginTime } = session;
-                
-                // Verificar se a sessão não expirou (24 horas)
-                const sessionAge = new Date() - new Date(loginTime);
-                const maxAge = 24 * 60 * 60 * 1000; // 24 horas
-                
-                if (sessionAge < maxAge) {
-                    // Restaurar sessão
-                    if (userType === 'admin') {
-                        document.body.classList.remove('login-mode');
-                        loginScreen.style.display = 'none';
-                        appContainer.style.display = 'flex';
-                        initializeSystem();
-                        showNotification('info', 'Sessão Restaurada', `Bem-vindo de volta, ${user.name}!`);
-                        return true;
-                    } else if (userType === 'partner') {
-                        document.body.classList.remove('login-mode');
-                        openPartnerPortal(session.partnerId);
-                        showNotification('info', 'Sessão Restaurada', `Bem-vindo de volta, ${user.company}!`);
-                        return true;
-                    } else if (userType === 'reseller') {
-                        document.body.classList.remove('login-mode');
-                        openResellerPortal(session.resellerId);
-                        showNotification('info', 'Sessão Restaurada', `Bem-vindo de volta, ${user.name}!`);
-                        return true;
+            try {
+                const session = loadUserSession();
+                if (session) {
+                    const { user, userType, loginTime } = session;
+                    
+                    // Verificar se a sessão não expirou (24 horas)
+                    const sessionAge = new Date() - new Date(loginTime);
+                    const maxAge = 24 * 60 * 60 * 1000; // 24 horas
+                    
+                    if (sessionAge < maxAge) {
+                        // Restaurar sessão
+                        if (userType === 'admin') {
+                            document.body.classList.remove('login-mode');
+                            loginScreen.style.display = 'none';
+                            appContainer.style.display = 'flex';
+                            initializeSystem();
+                            showNotification('info', 'Sessão Restaurada', `Bem-vindo de volta, ${user.name}!`);
+                            return true;
+                        }
+                    } else {
+                        // Sessão expirada
+                        clearUserSession();
                     }
-                } else {
-                    // Sessão expirada
-                    clearUserSession();
-                    showNotification('warning', 'Sessão Expirada', 'Faça login novamente');
                 }
+            } catch (error) {
+                console.warn('Erro ao verificar sessão:', error);
             }
+            
+            // Garantir que a tela de login seja exibida
+            document.body.classList.add('login-mode');
+            loginScreen.style.display = 'flex';
+            appContainer.style.display = 'none';
             return false;
         }
         
