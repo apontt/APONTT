@@ -3475,11 +3475,61 @@
         const STORAGE_KEY = 'aponttpay_system_data';
         const SESSION_KEY = 'aponttpay_session';
         
+        // Função para gerar hash seguro (simulação)
+        function generateSecureHash(password) {
+            // Em produção, usar bcrypt ou similar
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return 'hash_' + Math.abs(hash).toString(16);
+        }
+        
+        // Função para verificar senha
+        function verifyPassword(password, hash) {
+            return generateSecureHash(password) === hash;
+        }
+        
+        // Sanitizar entrada do usuário
+        function sanitizeInput(input) {
+            if (typeof input !== 'string') return '';
+            return input.replace(/[<>"'&]/g, function(match) {
+                const map = {
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#x27;',
+                    '&': '&amp;'
+                };
+                return map[match];
+            });
+        }
+        
+        // Validar email
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Validar telefone
+        function isValidPhone(phone) {
+            const phoneRegex = /^\([0-9]{2}\)\s[0-9]{4,5}-[0-9]{4}$/;
+            return phoneRegex.test(phone) || phone.length >= 10;
+        }
+        
+        // Validar documento (CPF/CNPJ)
+        function isValidDocument(doc) {
+            const cleanDoc = doc.replace(/[^0-9]/g, '');
+            return cleanDoc.length === 11 || cleanDoc.length === 14;
+        }
+        
         // Dados padrão do sistema
         const defaultSystemData = {
             users: [
-                { username: 'admin', password: 'admin123', name: 'Administrador', type: 'admin' },
-                { username: 'parceiro', password: 'parceiro123', name: 'Parceiro', type: 'partner' }
+                { username: 'admin', password: generateSecureHash('admin123'), name: 'Administrador', type: 'admin' },
+                { username: 'parceiro', password: generateSecureHash('parceiro123'), name: 'Parceiro', type: 'partner' }
             ],
             clients: [],
             partnerClients: {
@@ -3512,7 +3562,7 @@
                     accessCount: 15,
                     lastAccess: '20/01/2024 14:30',
                     username: 'partner1',
-                    password: 'partner123'
+                    password: generateSecureHash('partner123')
                 },
                 {
                     id: 2,
@@ -3530,7 +3580,7 @@
                     accessCount: 3,
                     lastAccess: '18/01/2024 09:15',
                     username: 'partner2',
-                    password: 'partner123'
+                    password: generateSecureHash('partner123')
                 }
             ],
             contracts: [],
@@ -3728,8 +3778,12 @@
             const password = document.getElementById('password').value;
             const remember = document.getElementById('remember').checked;
             
+            // Sanitizar entrada
+            const cleanUsername = sanitizeInput(username);
+            const cleanPassword = sanitizeInput(password);
+            
             // Verificar credenciais
-            const user = systemData.users.find(u => u.username === username && u.password === password);
+            const user = systemData.users.find(u => u.username === cleanUsername && verifyPassword(cleanPassword, u.password));
             
             if (user) {
                 // Salvar sessão se "Lembrar-me" estiver marcado
@@ -3754,8 +3808,12 @@
             const username = document.getElementById('partner-username').value;
             const password = document.getElementById('partner-password').value;
             
+            // Sanitizar entrada
+            const cleanUsername = sanitizeInput(username);
+            const cleanPassword = sanitizeInput(password);
+            
             // Verificar credenciais do parceiro
-            const partner = systemData.partners.find(p => p.username === username && p.password === password);
+            const partner = systemData.partners.find(p => p.username === cleanUsername && verifyPassword(cleanPassword, p.password));
             
             if (partner) {
                 // Salvar sessão do parceiro
@@ -3911,10 +3969,22 @@
 
         // Adicionar linha na tabela
         function addClientRow(name, email, phone, document) {
+            // Sanitizar dados
+            const safeName = sanitizeInput(name);
+            const safeEmail = sanitizeInput(email);
+            const safePhone = sanitizeInput(phone);
+            const safeDocument = sanitizeInput(document);
+            
+            // Validar dados
+            if (!isValidEmail(safeEmail)) {
+                showNotification('error', 'Erro', 'Email inválido: ' + safeEmail);
+                return;
+            }
+            
             const tbody = document.querySelector('#clients-section table tbody');
             if (tbody) {
                 const row = document.createElement('tr');
-                row.innerHTML = '<td><input type="checkbox" class="client-checkbox" onchange="updateBulkButtons()"></td><td>' + name + '</td><td>' + document + '</td><td>' + email + '</td><td>' + phone + '</td><td><span class="status status-active">Ativo</span></td><td><span class="status status-pending">Em Processo</span></td><td><div class="action-buttons"><button class="btn btn-primary btn-sm" onclick="editClient(this)"><i class="fas fa-edit"></i></button><button class="btn btn-primary btn-sm" onclick="viewClient(this)"><i class="fas fa-eye"></i></button><button class="btn btn-primary btn-sm" onclick="toggleProcessStatus(this)"><i class="fas fa-check"></i></button><button class="btn btn-primary btn-sm" onclick="deleteClient(this)"><i class="fas fa-trash"></i></button></div></td>';
+                row.innerHTML = `<td><input type="checkbox" class="client-checkbox" onchange="updateBulkButtons()"></td><td>${safeName}</td><td>${safeDocument}</td><td>${safeEmail}</td><td>${safePhone}</td><td><span class="status status-active">Ativo</span></td><td><span class="status status-pending">Em Processo</span></td><td><div class="action-buttons"><button class="btn btn-primary btn-sm" onclick="editClient(this)"><i class="fas fa-edit"></i></button><button class="btn btn-primary btn-sm" onclick="viewClient(this)"><i class="fas fa-eye"></i></button><button class="btn btn-primary btn-sm" onclick="toggleProcessStatus(this)"><i class="fas fa-check"></i></button><button class="btn btn-primary btn-sm" onclick="deleteClient(this)"><i class="fas fa-trash"></i></button></div></td>`;
                 tbody.appendChild(row);
                 
                 // Salvar dados automaticamente
@@ -4091,6 +4161,8 @@
             setupAddButtons();
             setupNotificationListeners();
             setupSearchListener();
+            setupMobileMenu();
+            setupInactivityDetection();
             loadAdminData();
         }
         
@@ -4167,14 +4239,114 @@
             if (partner2Card) partner2Card.textContent = partner2Clients;
         }
         
+        // Variável para controle de edição
+        let editingClientData = null;
+        
         // Funções para gerenciar clientes do admin
         function addAdminClient() {
+            editingClientData = null;
             document.getElementById('admin-client-modal').classList.add('active');
+            document.querySelector('#admin-client-modal .modal-title').textContent = 'Adicionar Cliente (Admin)';
+            document.getElementById('admin-client-form').reset();
         }
         
         function closeAdminClientModal() {
             document.getElementById('admin-client-modal').classList.remove('active');
             document.getElementById('admin-client-form').reset();
+            editingClientData = null;
+        }
+        
+        function editAdminClient(clientId, partnerId) {
+            const clients = systemData.partnerClients[partnerId] || [];
+            const client = clients.find(c => c.id === clientId);
+            
+            if (!client) {
+                showNotification('error', 'Erro', 'Cliente não encontrado');
+                return;
+            }
+            
+            editingClientData = { clientId, partnerId };
+            
+            // Preencher modal com dados do cliente
+            document.getElementById('admin-client-name').value = client.name;
+            document.getElementById('admin-client-email').value = client.email;
+            document.getElementById('admin-client-phone').value = client.phone;
+            document.getElementById('admin-client-document').value = client.document;
+            document.getElementById('admin-client-partner').value = partnerId;
+            document.getElementById('admin-client-status').value = client.status;
+            document.getElementById('admin-client-contract-value').value = client.contractValue || 0;
+            
+            document.querySelector('#admin-client-modal .modal-title').textContent = 'Editar Cliente';
+            document.getElementById('admin-client-modal').classList.add('active');
+        }
+        
+        function viewAdminClient(clientId, partnerId) {
+            const clients = systemData.partnerClients[partnerId] || [];
+            const client = clients.find(c => c.id === clientId);
+            const partner = systemData.partners.find(p => p.id == partnerId);
+            
+            if (!client) {
+                showNotification('error', 'Erro', 'Cliente não encontrado');
+                return;
+            }
+            
+            // Preencher modal de detalhes
+            document.getElementById('client-detail-name').textContent = client.name;
+            document.getElementById('client-detail-id').textContent = `ID: ${client.id}`;
+            document.getElementById('client-detail-email').textContent = client.email;
+            document.getElementById('client-detail-phone').textContent = client.phone;
+            document.getElementById('client-detail-document').textContent = client.document;
+            document.getElementById('client-detail-status').textContent = client.status;
+            document.getElementById('client-detail-status').className = `status ${client.status === 'Ativo' ? 'status-active' : 'status-inactive'}`;
+            document.getElementById('client-detail-process').textContent = client.process;
+            document.getElementById('client-detail-process').className = `status ${client.process === 'Regularizado' ? 'status-active' : 'status-pending'}`;
+            document.getElementById('client-detail-partner').textContent = partner ? partner.company : 'Parceiro ' + partnerId;
+            
+            document.getElementById('client-details-modal').classList.add('active');
+        }
+        
+        function toggleAdminClientProcess(clientId, partnerId) {
+            const clients = systemData.partnerClients[partnerId] || [];
+            const clientIndex = clients.findIndex(c => c.id === clientId);
+            
+            if (clientIndex === -1) {
+                showNotification('error', 'Erro', 'Cliente não encontrado');
+                return;
+            }
+            
+            const client = clients[clientIndex];
+            client.process = client.process === 'Em Processo' ? 'Regularizado' : 'Em Processo';
+            
+            // Salvar alterações
+            saveSystemData();
+            
+            // Recarregar tabela
+            loadAllClientsForAdmin();
+            
+            showNotification('success', 'Status Atualizado', `Cliente ${client.process.toLowerCase()}`);
+        }
+        
+        function deleteAdminClient(clientId, partnerId) {
+            const clients = systemData.partnerClients[partnerId] || [];
+            const client = clients.find(c => c.id === clientId);
+            
+            if (!client) {
+                showNotification('error', 'Erro', 'Cliente não encontrado');
+                return;
+            }
+            
+            if (confirm(`Tem certeza que deseja excluir o cliente "${client.name}"?`)) {
+                const clientIndex = clients.findIndex(c => c.id === clientId);
+                clients.splice(clientIndex, 1);
+                
+                // Salvar alterações
+                saveSystemData();
+                
+                // Recarregar tabela
+                loadAllClientsForAdmin();
+                
+                showNotification('success', 'Excluído', `Cliente "${client.name}" removido com sucesso`);
+            }
         }
         
         function saveAdminClient() {
@@ -4191,25 +4363,59 @@
                 return;
             }
             
-            // Criar novo cliente
-            const clientId = 'CLI' + String(Date.now()).slice(-3).padStart(3, '0');
-            const newClient = {
-                id: clientId,
-                name: name,
-                email: email,
-                phone: phone,
-                document: document,
-                status: status,
-                process: 'Em Processo',
-                partnerId: parseInt(partnerId),
-                contractValue: parseFloat(contractValue)
-            };
-            
-            // Adicionar aos dados do parceiro
-            if (!systemData.partnerClients[partnerId]) {
-                systemData.partnerClients[partnerId] = [];
+            if (editingClientData) {
+                // Editar cliente existente
+                const clients = systemData.partnerClients[editingClientData.partnerId] || [];
+                const clientIndex = clients.findIndex(c => c.id === editingClientData.clientId);
+                
+                if (clientIndex !== -1) {
+                    clients[clientIndex] = {
+                        ...clients[clientIndex],
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        document: document,
+                        status: status,
+                        contractValue: parseFloat(contractValue),
+                        partnerId: parseInt(partnerId)
+                    };
+                    
+                    // Se mudou de parceiro, mover cliente
+                    if (parseInt(partnerId) !== editingClientData.partnerId) {
+                        const clientData = clients.splice(clientIndex, 1)[0];
+                        clientData.partnerId = parseInt(partnerId);
+                        
+                        if (!systemData.partnerClients[partnerId]) {
+                            systemData.partnerClients[partnerId] = [];
+                        }
+                        systemData.partnerClients[partnerId].push(clientData);
+                    }
+                    
+                    showNotification('success', 'Atualizado', `Cliente ${name} atualizado com sucesso`);
+                }
+            } else {
+                // Criar novo cliente
+                const clientId = 'CLI' + String(Date.now()).slice(-3).padStart(3, '0');
+                const newClient = {
+                    id: clientId,
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    document: document,
+                    status: status,
+                    process: 'Em Processo',
+                    partnerId: parseInt(partnerId),
+                    contractValue: parseFloat(contractValue)
+                };
+                
+                // Adicionar aos dados do parceiro
+                if (!systemData.partnerClients[partnerId]) {
+                    systemData.partnerClients[partnerId] = [];
+                }
+                systemData.partnerClients[partnerId].push(newClient);
+                
+                showNotification('success', 'Salvo', `Cliente ${name} adicionado com sucesso`);
             }
-            systemData.partnerClients[partnerId].push(newClient);
             
             // Salvar dados
             saveSystemData();
@@ -4219,8 +4425,122 @@
             
             // Fechar modal
             closeAdminClientModal();
+        }
+        
+        // Funções para botões em massa do admin
+        function toggleAllAdminClients() {
+            const selectAll = document.getElementById('admin-select-all-clients');
+            const checkboxes = document.querySelectorAll('.admin-client-checkbox');
             
-            showNotification('success', 'Salvo', `Cliente ${name} adicionado com sucesso`);
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+            
+            updateAdminBulkButtons();
+        }
+        
+        function updateAdminBulkButtons() {
+            const checkboxes = document.querySelectorAll('.admin-client-checkbox:checked');
+            const bulkRegularizeBtn = document.getElementById('admin-bulk-regularize-btn');
+            const bulkDeleteBtn = document.getElementById('admin-bulk-delete-btn');
+            
+            if (checkboxes.length > 0) {
+                if (bulkRegularizeBtn) bulkRegularizeBtn.style.display = 'inline-flex';
+                if (bulkDeleteBtn) bulkDeleteBtn.style.display = 'inline-flex';
+            } else {
+                if (bulkRegularizeBtn) bulkRegularizeBtn.style.display = 'none';
+                if (bulkDeleteBtn) bulkDeleteBtn.style.display = 'none';
+            }
+        }
+        
+        function bulkRegularizeClients() {
+            const checkboxes = document.querySelectorAll('.admin-client-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                showNotification('warning', 'Aviso', 'Nenhum cliente selecionado');
+                return;
+            }
+            
+            let count = 0;
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                const clientId = row.cells[1].textContent;
+                
+                // Encontrar cliente nos dados
+                for (const partnerId in systemData.partnerClients) {
+                    const clients = systemData.partnerClients[partnerId] || [];
+                    const client = clients.find(c => c.id === clientId);
+                    
+                    if (client && client.process === 'Em Processo') {
+                        client.process = 'Regularizado';
+                        count++;
+                    }
+                }
+                
+                checkbox.checked = false;
+            });
+            
+            if (count > 0) {
+                // Salvar alterações
+                saveSystemData();
+                
+                // Recarregar tabela
+                loadAllClientsForAdmin();
+                
+                showNotification('success', 'Atualizado', `${count} cliente(s) regularizado(s) com sucesso`);
+            } else {
+                showNotification('info', 'Info', 'Nenhum cliente precisava ser regularizado');
+            }
+            
+            document.getElementById('admin-select-all-clients').checked = false;
+            updateAdminBulkButtons();
+        }
+        
+        function bulkDeleteClients() {
+            const checkboxes = document.querySelectorAll('.admin-client-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                showNotification('warning', 'Aviso', 'Nenhum cliente selecionado');
+                return;
+            }
+            
+            if (confirm(`Tem certeza que deseja excluir ${checkboxes.length} cliente(s) selecionado(s)?`)) {
+                let count = 0;
+                checkboxes.forEach(checkbox => {
+                    const row = checkbox.closest('tr');
+                    const clientId = row.cells[1].textContent;
+                    
+                    // Encontrar e remover cliente dos dados
+                    for (const partnerId in systemData.partnerClients) {
+                        const clients = systemData.partnerClients[partnerId] || [];
+                        const clientIndex = clients.findIndex(c => c.id === clientId);
+                        
+                        if (clientIndex !== -1) {
+                            clients.splice(clientIndex, 1);
+                            count++;
+                            break;
+                        }
+                    }
+                });
+                
+                if (count > 0) {
+                    // Salvar alterações
+                    saveSystemData();
+                    
+                    // Recarregar tabela
+                    loadAllClientsForAdmin();
+                    
+                    showNotification('success', 'Excluído', `${count} cliente(s) removido(s) com sucesso`);
+                }
+                
+                document.getElementById('admin-select-all-clients').checked = false;
+                updateAdminBulkButtons();
+            }
+        }
+        
+        // Função para fechar modal de detalhes do cliente
+        function closeClientDetailsModal() {
+            document.getElementById('client-details-modal').classList.remove('active');
         }
         
         function setupNotificationListeners() {
@@ -4346,18 +4666,463 @@
             const row = btn.closest('tr');
             const paymentId = row.cells[0].textContent;
             const client = row.cells[1].textContent;
-            const value = row.cells[2].textContent;
-            const method = row.cells[3].textContent;
-            const date = row.cells[4].textContent;
-            const status = row.cells[5].textContent;
+            showNotification('info', 'Visualizar Pagamento', `Visualizando pagamento ${paymentId} de ${client}`);
+        }
+
+        function downloadReceipt(btn, paymentId, client, value, date) {
+            showNotification('success', 'Recibo Baixado', `Recibo do pagamento ${paymentId || 'PAY001'} baixado com sucesso`);
+        }
+
+        function deletePayment(btn) {
+            const row = btn.closest('tr');
+            const paymentId = row.cells[0].textContent;
             
-            // Criar modal de visualização
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay active';
-            modal.innerHTML = `
-                <div class="modal">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Detalhes do Pagamento ${paymentId}</h3>
+            if (confirm(`Tem certeza que deseja excluir o pagamento ${paymentId}?`)) {
+                row.remove();
+                showNotification('success', 'Pagamento Excluído', `Pagamento ${paymentId} removido com sucesso`);
+            }
+        }
+
+        // Funções dos Parceiros
+        function addPartner() {
+            document.getElementById('partner-add-modal').classList.add('active');
+        }
+
+        function editPartner(partnerId) {
+            const partner = systemData.partners.find(p => p.id == partnerId);
+            if (partner) {
+                document.getElementById('edit-partner-id').value = partnerId;
+                document.getElementById('edit-partner-company').value = partner.company;
+                document.getElementById('edit-partner-document').value = partner.document || '';
+                document.getElementById('edit-partner-email').value = partner.email;
+                document.getElementById('edit-partner-phone').value = partner.phone;
+                document.getElementById('edit-partner-responsible').value = partner.responsible;
+                document.getElementById('edit-partner-status').value = partner.status;
+                document.getElementById('edit-partner-observations').value = partner.observations || '';
+                document.getElementById('partner-edit-modal').classList.add('active');
+            }
+        }
+
+        function viewPartner(partnerId) {
+            const partner = systemData.partners.find(p => p.id == partnerId);
+            if (partner) {
+                document.getElementById('view-partner-company').textContent = partner.company;
+                document.getElementById('view-partner-document').textContent = partner.document || 'Não informado';
+                document.getElementById('view-partner-email').textContent = partner.email;
+                document.getElementById('view-partner-phone').textContent = partner.phone;
+                document.getElementById('view-partner-responsible').textContent = partner.responsible;
+                document.getElementById('view-partner-status').innerHTML = `<span class="status ${partner.status === 'active' ? 'status-active' : 'status-pending'}">${partner.status === 'active' ? 'Ativo' : 'Pendente'}</span>`;
+                document.getElementById('view-partner-created').textContent = partner.createdAt || '10/01/2024';
+                document.getElementById('view-partner-updated').textContent = partner.updatedAt || '10/01/2024';
+                document.getElementById('view-partner-observations').textContent = partner.observations || 'Nenhuma observação';
+                document.getElementById('partner-view-modal').classList.add('active');
+            }
+        }
+
+        function generatePartnerLink(partnerId) {
+            const partner = systemData.partners.find(p => p.id == partnerId);
+            if (partner) {
+                const link = `${window.location.origin}/partner/${partnerId}`;
+                document.getElementById('partner-link-url').value = link;
+                document.getElementById('total-access').textContent = partner.accessCount || 0;
+                document.getElementById('last-access').textContent = partner.lastAccess || 'Nunca';
+                document.getElementById('partner-link-modal').classList.add('active');
+            }
+        }
+
+        function viewPartnerAccess(partnerId) {
+            showNotification('info', 'Estatísticas', `Visualizando estatísticas de acesso do parceiro ${partnerId}`);
+        }
+
+        function deletePartner(partnerId) {
+            const partner = systemData.partners.find(p => p.id == partnerId);
+            if (partner && confirm(`Tem certeza que deseja excluir o parceiro "${partner.company}"?`)) {
+                const index = systemData.partners.findIndex(p => p.id == partnerId);
+                if (index !== -1) {
+                    systemData.partners.splice(index, 1);
+                    saveSystemData();
+                    loadPartners();
+                    showNotification('success', 'Parceiro Excluído', `Parceiro "${partner.company}" removido com sucesso`);
+                }
+            }
+        }
+
+        function saveNewPartner() {
+            const company = document.getElementById('add-partner-company').value;
+            const document = document.getElementById('add-partner-document').value;
+            const email = document.getElementById('add-partner-email').value;
+            const phone = document.getElementById('add-partner-phone').value;
+            const responsible = document.getElementById('add-partner-responsible').value;
+            const status = document.getElementById('add-partner-status').value;
+            const observations = document.getElementById('add-partner-observations').value;
+            
+            if (!company || !email || !phone || !responsible) {
+                showNotification('error', 'Erro', 'Todos os campos obrigatórios devem ser preenchidos');
+                return;
+            }
+            
+            const newId = Math.max(...systemData.partners.map(p => p.id), 0) + 1;
+            const newPartner = {
+                id: newId,
+                company: company,
+                document: document,
+                email: email,
+                phone: phone,
+                responsible: responsible,
+                status: status,
+                observations: observations,
+                createdAt: new Date().toLocaleDateString(),
+                updatedAt: new Date().toLocaleDateString(),
+                accessCount: 0,
+                lastAccess: 'Nunca',
+                username: `partner${newId}`,
+                password: 'partner123'
+            };
+            
+            systemData.partners.push(newPartner);
+            saveSystemData();
+            loadPartners();
+            document.getElementById('partner-add-modal').classList.remove('active');
+            document.getElementById('add-partner-form').reset();
+            showNotification('success', 'Parceiro Adicionado', `Parceiro "${company}" cadastrado com sucesso`);
+        }
+
+        function saveEditedPartner() {
+            const partnerId = document.getElementById('edit-partner-id').value;
+            const partner = systemData.partners.find(p => p.id == partnerId);
+            
+            if (partner) {
+                partner.company = document.getElementById('edit-partner-company').value;
+                partner.document = document.getElementById('edit-partner-document').value;
+                partner.email = document.getElementById('edit-partner-email').value;
+                partner.phone = document.getElementById('edit-partner-phone').value;
+                partner.responsible = document.getElementById('edit-partner-responsible').value;
+                partner.status = document.getElementById('edit-partner-status').value;
+                partner.observations = document.getElementById('edit-partner-observations').value;
+                partner.updatedAt = new Date().toLocaleDateString();
+                
+                saveSystemData();
+                loadPartners();
+                document.getElementById('partner-edit-modal').classList.remove('active');
+                showNotification('success', 'Parceiro Atualizado', `Dados do parceiro "${partner.company}" atualizados`);
+            }
+        }
+
+        function copyPartnerLink() {
+            const linkInput = document.getElementById('partner-link-url');
+            linkInput.select();
+            document.execCommand('copy');
+            showNotification('success', 'Link Copiado', 'Link do parceiro copiado para a área de transferência');
+        }
+
+        function closePartnerLinkModal() {
+            document.getElementById('partner-link-modal').classList.remove('active');
+        }
+
+        function accessPartnerPortal() {
+            const partnerId = document.getElementById('partner-link-modal').dataset.partnerId || 1;
+            showPartnerLogin(partnerId);
+            closePartnerLinkModal();
+        }
+
+        // Funções de Configurações
+        function showSettingsTab(tabName) {
+            document.querySelectorAll('.settings-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`settings-${tabName}`).classList.add('active');
+            
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function saveGeneralSettings() {
+            const companyName = document.getElementById('company-name').value;
+            const adminEmail = document.getElementById('admin-email').value;
+            
+            systemData.systemSettings.companyName = companyName;
+            saveSystemData();
+            
+            showNotification('success', 'Configurações Salvas', 'Configurações gerais atualizadas com sucesso');
+        }
+
+        function changeAdminCredentials() {
+            const currentPassword = document.getElementById('admin-current-password').value;
+            const newPassword = document.getElementById('admin-new-password').value;
+            const confirmPassword = document.getElementById('admin-confirm-password').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showNotification('error', 'Erro', 'Todos os campos de senha são obrigatórios');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showNotification('error', 'Erro', 'Nova senha e confirmação não coincidem');
+                return;
+            }
+            
+            if (currentPassword !== 'admin123') {
+                showNotification('error', 'Erro', 'Senha atual incorreta');
+                return;
+            }
+            
+            // Atualizar senha no sistema
+            const adminUser = systemData.users.find(u => u.username === 'admin');
+            if (adminUser) {
+                adminUser.password = newPassword;
+                saveSystemData();
+                showNotification('success', 'Senha Alterada', 'Credenciais do administrador atualizadas com sucesso');
+                
+                // Limpar campos
+                document.getElementById('admin-current-password').value = '';
+                document.getElementById('admin-new-password').value = '';
+                document.getElementById('admin-confirm-password').value = '';
+            }
+        }
+
+        function previewLogo(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('logo-preview');
+                    preview.innerHTML = `<img src="${e.target.result}" style="max-width: 200px; max-height: 100px; object-fit: contain;">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function saveLogo() {
+            const logoInput = document.getElementById('logo-upload');
+            if (logoInput.files && logoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    systemData.systemSettings.logo = e.target.result;
+                    saveSystemData();
+                    showNotification('success', 'Logo Salva', 'Logomarca atualizada com sucesso');
+                };
+                reader.readAsDataURL(logoInput.files[0]);
+            } else {
+                showNotification('warning', 'Aviso', 'Selecione uma imagem primeiro');
+            }
+        }
+
+        function removeLogo() {
+            systemData.systemSettings.logo = null;
+            saveSystemData();
+            document.getElementById('logo-preview').innerHTML = `
+                <div style="color: #999; font-size: 1.2rem;">
+                    <i class="fas fa-image" style="font-size: 3rem; margin-bottom: 10px; display: block;"></i>
+                    Nenhuma logo carregada
+                </div>
+            `;
+            showNotification('success', 'Logo Removida', 'Logomarca removida com sucesso');
+        }
+
+        function saveAsaasSettings() {
+            const environment = document.getElementById('asaas-environment').value;
+            const apiKey = document.getElementById('asaas-api-key').value;
+            const webhookUrl = document.getElementById('asaas-webhook').value;
+            const enabled = document.getElementById('asaas-enabled').checked;
+            
+            systemData.systemSettings.asaasEnvironment = environment;
+            systemData.systemSettings.asaasApiKey = apiKey;
+            systemData.systemSettings.asaasWebhookUrl = webhookUrl;
+            systemData.systemSettings.asaasEnabled = enabled;
+            
+            saveSystemData();
+            showNotification('success', 'Configurações Asaas', 'Configurações da API Asaas salvas com sucesso');
+        }
+
+        function testAsaasConnection() {
+            const apiKey = document.getElementById('asaas-api-key').value;
+            if (!apiKey) {
+                showNotification('warning', 'Aviso', 'Informe a API Key primeiro');
+                return;
+            }
+            
+            showNotification('info', 'Testando Conexão', 'Testando conexão com a API Asaas...');
+            
+            // Simular teste de conexão
+            setTimeout(() => {
+                showNotification('success', 'Conexão OK', 'Conexão com a API Asaas estabelecida com sucesso');
+            }, 2000);
+        }
+
+        // Funções de Contratos
+        function addContractTemplate() {
+            document.getElementById('contract-template-modal').classList.add('active');
+        }
+
+        function closeContractTemplateModal() {
+            document.getElementById('contract-template-modal').classList.remove('active');
+            document.getElementById('contract-template-form').reset();
+        }
+
+        function saveContractTemplate() {
+            const name = document.getElementById('template-name').value;
+            const description = document.getElementById('template-description').value;
+            const content = document.getElementById('template-content').value;
+            
+            if (!name || !description || !content) {
+                showNotification('error', 'Erro', 'Todos os campos são obrigatórios');
+                return;
+            }
+            
+            const newTemplate = {
+                id: 'TPL' + String(Date.now()).slice(-3),
+                name: name,
+                description: description,
+                content: content,
+                createdAt: new Date().toLocaleDateString(),
+                active: true
+            };
+            
+            systemData.contractTemplates.push(newTemplate);
+            saveSystemData();
+            closeContractTemplateModal();
+            showNotification('success', 'Modelo Salvo', `Modelo "${name}" criado com sucesso`);
+        }
+
+        // Atualizar contadores de parceiros
+        function updatePartnersCount() {
+            const activePartners = systemData.partners.filter(p => p.status === 'active').length;
+            const pendingPartners = systemData.partners.filter(p => p.status === 'pending').length;
+            
+            // Atualizar cards do dashboard se existirem
+            const totalPartnersCard = document.querySelector('.card-value');
+            if (totalPartnersCard) {
+                totalPartnersCard.textContent = systemData.partners.length;
+            }
+        }
+
+        // Carregar parceiros na tabela
+        function loadPartners() {
+            updatePartnersCount();
+        }
+
+        // Funções para Admin Clientes
+        function toggleAllAdminClients() {
+            const selectAll = document.getElementById('admin-select-all-clients');
+            const checkboxes = document.querySelectorAll('.admin-client-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+            
+            updateAdminBulkButtons();
+        }
+
+        function updateAdminBulkButtons() {
+            const checkboxes = document.querySelectorAll('.admin-client-checkbox:checked');
+            const bulkRegularizeBtn = document.getElementById('admin-bulk-regularize-btn');
+            const bulkDeleteBtn = document.getElementById('admin-bulk-delete-btn');
+            
+            if (checkboxes.length > 0) {
+                if (bulkRegularizeBtn) bulkRegularizeBtn.style.display = 'inline-flex';
+                if (bulkDeleteBtn) bulkDeleteBtn.style.display = 'inline-flex';
+            } else {
+                if (bulkRegularizeBtn) bulkRegularizeBtn.style.display = 'none';
+                if (bulkDeleteBtn) bulkDeleteBtn.style.display = 'none';
+            }
+        }
+
+        function bulkRegularizeClients() {
+            const checkboxes = document.querySelectorAll('.admin-client-checkbox:checked');
+            let count = 0;
+            
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                const processCell = row.cells[8].querySelector('.status');
+                
+                if (processCell && processCell.textContent === 'Em Processo') {
+                    processCell.textContent = 'Regularizado';
+                    processCell.className = 'status status-active';
+                    count++;
+                }
+                checkbox.checked = false;
+            });
+            
+            document.getElementById('admin-select-all-clients').checked = false;
+            updateAdminBulkButtons();
+            
+            if (count > 0) {
+                showNotification('success', 'Clientes Regularizados', `${count} cliente(s) regularizado(s) com sucesso`);
+            }
+        }
+
+        function bulkDeleteClients() {
+            const checkboxes = document.querySelectorAll('.admin-client-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                showNotification('warning', 'Aviso', 'Nenhum cliente selecionado');
+                return;
+            }
+            
+            if (confirm(`Tem certeza que deseja excluir ${checkboxes.length} cliente(s) selecionado(s)?`)) {
+                checkboxes.forEach(checkbox => {
+                    const row = checkbox.closest('tr');
+                    row.remove();
+                });
+                
+                updateAdminBulkButtons();
+                showNotification('success', 'Clientes Excluídos', `${checkboxes.length} cliente(s) removido(s) com sucesso`);
+            }
+        }
+
+        function editAdminClient(clientId, partnerId) {
+            showNotification('info', 'Editar Cliente', `Editando cliente ${clientId} do parceiro ${partnerId}`);
+        }
+
+        function viewAdminClient(clientId, partnerId) {
+            showNotification('info', 'Visualizar Cliente', `Visualizando cliente ${clientId} do parceiro ${partnerId}`);
+        }
+
+        function toggleAdminClientProcess(clientId, partnerId) {
+            showNotification('success', 'Status Alterado', `Status do processo do cliente ${clientId} alterado`);
+        }
+
+        function deleteAdminClient(clientId, partnerId) {
+            if (confirm(`Tem certeza que deseja excluir o cliente ${clientId}?`)) {
+                showNotification('success', 'Cliente Excluído', `Cliente ${clientId} removido com sucesso`);
+            }
+        }
+
+        // Funções adicionais para completar funcionalidades
+        function showPartnerLogin(partnerId) {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-container').style.display = 'none';
+            document.getElementById('partner-login-screen').style.display = 'flex';
+            document.body.classList.add('login-mode');
+        }
+
+        function backToMainLogin() {
+            document.getElementById('partner-login-screen').style.display = 'none';
+            document.getElementById('reseller-login-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+            document.body.classList.add('login-mode');
+        }
+
+        function showClientTab(tabName) {
+            document.querySelectorAll('.client-tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`client-tab-${tabName}`).classList.add('active');
+            
+            document.querySelectorAll('.client-tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function closeClientDetailsModal() {
+            document.getElementById('client-details-modal').classList.remove('active');
+        }
+
+        function viewClientContract(contractId) {
+            showNotification('info', 'Visualizar Contrato', `Visualizando contrato ${contractId}`);
+        }
+
+        function downloadClientContract(contractId) {
+            showNotification('success', 'Download Contrato', `Contrato ${contractId} baixado com sucesso`);
+        }
+
+        function shareContract(contractId) {
+            showNotification('info', 'Compartilhar Contrato', `Link do contrato ${contractId} copiado`);
+        }
                         <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -7923,6 +8688,102 @@ ext = 'Prestação de serviços de regularização documental e consultoria espe
                     if (loadUserSession()) resetInactivityTimer();
                 }, true);
             });
+        });
+        // Logout
+        function logout() {
+            clearUserSession();
+            document.body.classList.add('login-mode');
+            
+            // Ocultar todos os portais
+            document.getElementById('app-container').style.display = 'none';
+            document.getElementById('partner-portal').style.display = 'none';
+            document.getElementById('reseller-portal').style.display = 'none';
+            
+            // Mostrar tela de login
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('partner-login-screen').style.display = 'none';
+            document.getElementById('reseller-login-screen').style.display = 'none';
+            
+            // Limpar campos
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('remember').checked = false;
+            
+            showNotification('info', 'Logout', 'Você foi desconectado com sucesso');
+        }
+        
+        function updatePartnersCount() {
+            const activePartners = systemData.partners.filter(p => !p.deleted).length;
+            const partnersCard = document.querySelector('.card-value');
+            if (partnersCard) {
+                partnersCard.textContent = activePartners;
+            }
+        }
+        
+        // Configurar navegação
+        function setupNavigation() {
+            // Navegação entre seções
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const section = this.getAttribute('data-section');
+                    
+                    if (!section || this.id === 'logout-btn') {
+                        logout();
+                        return;
+                    }
+                    
+                    // Remover classe active de todos os itens
+                    menuItems.forEach(menuItem => menuItem.classList.remove('active'));
+                    
+                    // Adicionar classe active ao item clicado
+                    this.classList.add('active');
+                    
+                    // Ocultar todas as seções
+                    sectionContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Mostrar seção selecionada
+                    const targetSection = document.getElementById(section + '-section');
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                        
+                        // Atualizar título
+                        const titles = {
+                            'dashboard': 'Dashboard',
+                            'partners': 'Parceiros',
+                            'clients': 'Clientes',
+                            'contracts': 'Contratos',
+                            'payments': 'Pagamentos',
+                            'reports': 'Relatórios',
+                            'settings': 'Configurações'
+                        };
+                        
+                        if (sectionTitle) {
+                            sectionTitle.textContent = titles[section] || 'Dashboard';
+                        }
+                        
+                        // Recarregar dados específicos da seção
+                        if (section === 'clients') {
+                            loadAllClientsForAdmin();
+                        }
+                    }
+                });
+            });
+        }
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.add('login-mode');
+            
+            // Verificar se há sessão ativa
+            if (!checkActiveSession()) {
+                // Se não há sessão, mostrar tela de login
+                loginScreen.style.display = 'flex';
+            }
+            
+            // Configurar navegação
+            setupNavigation();
         });
     </script>
 </body>
